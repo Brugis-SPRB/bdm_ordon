@@ -9,27 +9,27 @@ _backuppath                  = os.path.join(expanduser("~"),"ftp_root/xxx/")
 _mailDir                     = os.path.join(_dbexportpath, "mail/brugis/")
 
 
-_diff_torestore_schemas      = ["brugis_intra", "xxx", "xxx", "xxx"]
-_staging_torestore_schemas   = ["brugis_intra", "xxx", "xxx", "xxx", "xxx"]
+_diff_torestore_schemas      = ["xxx", "xxx", "xxx", "xxx"]
+_staging_torestore_schemas   = ["xxx", "xxx", "xxx", "xxx", "xxx"]
 
 _diff_toharvest_schemas      = ["xxx","xxx", "xxx","xxx"]
-_prod_toharvest_schemas      = ["brugis_intra", "xxx", "xxx", "xxx"]
+_prod_toharvest_schemas      = ["xxx", "xxx", "xxx", "xxx"]
 
 _prod_todownload_schemas     = ["xxx","xxx", "xxx","xxx"]
 _staging_todownload_schemas  = ["xxx"]
 
 
 
-_dirDiff                      = ['/xxx/databrugis_transfer/']
-_dirStaging                   = ['/xxx/databrugis_transfer/']
-_dirProd                      = ['/xxx/databrugis_transfer/']
+_dirDiff                      = ['/xxx/xxx/']
+_dirStaging                   = ['/xxx/xxx/']
+_dirProd                      = ['/xxx/xxx/']
 
 
 _allschemasdown               = ["xxx","xxx"]
 _alldumpsdown                 = ["xxx.backup","xxx.backup"]
 
 
-_fileinter                    = 'databrugisxxx'
+_fileinter                    = 'xxx'
 _fileexterninter              = 'xxx'
 
 
