@@ -9,6 +9,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 
 import shared.ordoconf as OCONF
 import localConf as LCONF
+import globalConf as GCONF
+
 
 from shared.printAndLog import printAndLog
 
@@ -119,7 +121,7 @@ if __name__ == "__main__":
                     printAndLog("Step {}".format(LCONF._envName), logFile)
                     
                 
-                    cmd = "{} {} -wf={} -ctx={}".format(pythonexec, os.path.join(scriptpath,script),newstep,LCONF._envName)
+                    cmd = "{} {} -wf={} -ctx={} -mode={} -d={}".format(pythonexec, os.path.join(scriptpath,script),newstep,LCONF._envName,GCONF._executionMode,GCONF._debugLevel)
                 
                     printAndLog("Script is {}".format(cmd), logFile)
                     args = cmd.split()

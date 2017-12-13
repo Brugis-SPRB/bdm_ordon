@@ -10,8 +10,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 
 
 import shared.ordoconf as OCONF
-from shared.printAndLog import printAndLog
 import shared.databrugisconf as DBRUC
+from shared.printAndLog import printAndLog
+
 
 
 
