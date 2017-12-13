@@ -16,17 +16,26 @@ import shared.ordoconf as OCONF
 
 if __name__ == "__main__":
     wfstepId = OCONF.getWorkflowID() 
+    mode = OCONF.getExecMode()
+    dlevel = OCONF.getDebugLevel()
     OCONF.tokenFileWriteRunning(wfstepId)
     try:
         logFileName = "{}-{}.log".format(os.path.basename(__file__).replace('.py', ''),datetime.date.today().strftime('%d_%m_%Y'))
         with open(os.path.join(DBRUC._mailDir, logFileName), 'a') as logFile:
             printAndLog( "{} running".format(wfstepId),logFile)
             printAndLog("Startup restore staging schemas", logFile)
+            if mode == "EMUL":
+                printAndLog("EMULATION MODE", logFile)
+                OCONF.tokenFileWriteDone(wfstepId) 
+                exit()
+        
             conn_s = "dbname='{}' user='{}' host='{}' password='{}'".format( DBRUC._db_dbname,
 																			 DBRUC._db_user, 
 																			 DBRUC._staging_db_host,
 																			 DBRUC._db_password)
             
+            if dlevel == 'V':
+                printAndLog("Connection string {}".format(conn_s), logFile)
             conn = psycopg2.connect(conn_s)
             cur = conn.cursor()
             
@@ -52,10 +61,13 @@ if __name__ == "__main__":
                     DBRUC._db_userdump,
                     fullpath,
                     sqllogfile)
+                if dlevel == 'V':
+                    printAndLog("Before Restore {}".format(cmd1), logFile)
                 os.system(cmd1)	
                 printAndLog( cmd1,logFile)
             
-
+            if dlevel == 'V':
+                printAndLog("Before synchro_staging_tables()", logFile)
             conn2 = psycopg2.connect(conn_s)
             cur2 = conn2.cursor()
             cur2.execute("select commonbrugis.synchro_staging_tables()")
