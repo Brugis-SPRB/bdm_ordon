@@ -18,6 +18,8 @@ import shared.ordoconf as OCONF
 
 if __name__ == "__main__":
     wfstepId = OCONF.getWorkflowID()
+    dlevel = OCONF.getDebugLevel()
+    mode = OCONF.getExecMode()
     OCONF.tokenFileWriteRunning(wfstepId)
     try:
         logFileName = "{}-{}.log".format(os.path.basename(__file__).replace('.py', ''),datetime.date.today().strftime('%d_%m_%Y'))
@@ -31,6 +33,10 @@ if __name__ == "__main__":
                                                                              DBRUC._prod_db_host,
                                                                              DBRUC._db_password)
             
+            if mode == "EMUL":
+                printAndLog("EMULATION MODE", logFile)
+                OCONF.tokenFileWriteDone(wfstepId) 
+                exit()
             conn = psycopg2.connect(conn_s)
             cur = conn.cursor()
             
@@ -57,11 +63,16 @@ if __name__ == "__main__":
                     DBRUC._db_userdump,
                     fullpath,
                     logfilename)
-                printAndLog(cmd, logFile)
+                if dlevel == 'V':
+                    printAndLog(cmd, logFile)
                 os.system(cmd)    
             conn2 = psycopg2.connect(conn_s)
             cur2 = conn2.cursor()
+            if dlevel == 'V':
+                printAndLog("Before wf_intextinter_2integration", logFile)
             cur2.execute("SELECT commonbrugis.wf_intextinter_2integration()")
+            if dlevel == 'V':
+                printAndLog("Before synchro_publish_tables", logFile)
             cur2.execute("select commonbrugis.synchro_publish_tables()")
             conn2.commit()
 

@@ -20,7 +20,9 @@ socket.setdefaulttimeout(120)
 
 if __name__ == "__main__":
     wfstepId = OCONF.getWorkflowID() 
+    dlevel = OCONF.getDebugLevel()
     OCONF.tokenFileWriteRunning(wfstepId)
+    mode = OCONF.getExecMode()
     # check for dbname
     
     dbname = DBRUC._db_dbname
@@ -33,6 +35,10 @@ if __name__ == "__main__":
             printAndLog( "{} running".format(wfstepId),logFile)
             printAndLog("Startup harvest.", logFile)
             nodename =  platform.node()
+            if mode == "EMUL":
+                printAndLog("EMULATION MODE", logFile)
+                OCONF.tokenFileWriteDone(wfstepId) 
+                exit()
             for sch in schemas:
                 filename= "{}{}".format(dbname, sch)
                 printAndLog("Export schema %s." % sch, logFile)
@@ -47,7 +53,8 @@ if __name__ == "__main__":
                     DBRUC._db_userdump,
                     sch,
                     fullpath)
-                printAndLog("Execute command %s" % cmd, logFile)                                                                                                                                          
+                if dlevel == 'V':
+                    printAndLog("Execute command %s" % cmd, logFile)                                                                                                                                          
                 os.system(cmd)
             printAndLog( "{} done".format(wfstepId),logFile)            
             if DBRUC._sendMail:

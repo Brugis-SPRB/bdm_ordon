@@ -18,6 +18,8 @@ import shared.ordoconf as OCONF
 
 if __name__ == "__main__":
 	wfstepId = OCONF.getWorkflowID() 
+	dlevel = OCONF.getDebugLevel()
+	mode = OCONF.getExecMode()
 	OCONF.tokenFileWriteRunning(wfstepId)
 	nodename =  platform.node()
 	
@@ -27,6 +29,10 @@ if __name__ == "__main__":
 		with open(os.path.join(DBRUC._mailDir, logFileName), 'a') as logFile:
 			printAndLog( "{} running".format(wfstepId),logFile)
 			printAndLog('Startup dispatch ', logFile)
+			if mode == "EMUL":
+				printAndLog("EMULATION MODE", logFile)
+				OCONF.tokenFileWriteDone(wfstepId)
+				exit()
 			try:
 				f = ftplib.FTP(DBRUC._ftpHOST, DBRUC._ftpLOGIN, DBRUC._ftpPASWD)
 			except (socket.error, socket.gaierror), e:
@@ -94,6 +100,8 @@ if __name__ == "__main__":
 			try:
 				for schem in schemanames:
 					filename= "{}{}.backup".format(DBRUC._db_dbname, schem)
+					if dlevel == 'V':
+						printAndLog("Remove if exist {}".format(filename), logFile)
 					localFile = os.path.join(DBRUC._dbexportpath, filename)
 					if os.path.exists(localFile):
 						os.remove(localFile)
