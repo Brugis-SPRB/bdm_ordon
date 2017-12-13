@@ -19,7 +19,9 @@ from shared.printAndLog import printAndLog
 
 
 if __name__ == "__main__":
-    wfstepId = OCONF.getWorkflowID() 
+    wfstepId = OCONF.getWorkflowID()
+    dlevel = OCONF.getDebugLevel()
+    mode = OCONF.getExecMode()
     OCONF.tokenFileWriteRunning(wfstepId)
     
     try:
@@ -31,6 +33,10 @@ if __name__ == "__main__":
                                                                              DBRUC._diff_db_host,
                                                                              DBRUC._db_password)
             
+            if mode == "EMUL":
+                printAndLog("EMULATION MODE", logFile)
+                OCONF.tokenFileWriteDone(wfstepId) 
+                exit()
             conn = psycopg2.connect(conn_s)
             cur = conn.cursor()
             
@@ -44,7 +50,9 @@ if __name__ == "__main__":
             
             
             for schem in DBRUC._diff_torestore_schemas:			
-                
+                if dlevel == 'V':
+                    printAndLog("Before DROP SCHEMA", logFile)
+                    
                 cur.execute("DROP SCHEMA if exists {} CASCADE".format(schem))
                 conn.commit()
             conn.close()
@@ -59,7 +67,9 @@ if __name__ == "__main__":
                     DBRUC._db_userdump,
                     fullpath,
                     logfilename)
-                
+                if dlevel == 'V':
+                    printAndLog("Restore {}".format(cmd1), logFile)
+                    
                 os.system(cmd1)	
                 printAndLog(cmd1, logFile)
             

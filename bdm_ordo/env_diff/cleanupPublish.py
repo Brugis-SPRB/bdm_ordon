@@ -19,6 +19,8 @@ from shared.rollingFile import rollingFile
 
 if __name__ == "__main__":
     wfstepId = OCONF.getWorkflowID()
+    dlevel = OCONF.getDebugLevel()
+    mode = OCONF.getExecMode()
     OCONF.tokenFileWriteRunning(wfstepId)
     try:
         logFileName = "{}-{}.log".format(os.path.basename(__file__).replace('.py', ''),datetime.date.today().strftime('%d_%m_%Y'))
@@ -26,7 +28,10 @@ if __name__ == "__main__":
         with open(os.path.join(DBRUC._mailDir, logFileName), 'a') as logFile:
             printAndLog( "{} running".format(wfstepId),logFile)
             printAndLog("Startup cleanup publish schemas", logFile)
-            
+            if mode == "EMUL":
+                printAndLog("EMULATION MODE", logFile)
+                OCONF.tokenFileWriteDone(wfstepId) 
+                exit()
             ##########################
             # Backup Publish
             filename = '{}{}.backup'.format(DBRUC._db_dbname, 'brugis_publish')
@@ -36,7 +41,8 @@ if __name__ == "__main__":
                 DBRUC._db_userdump,
                 'brugis_publish',
                 fullpath)
-            
+            if dlevel == 'V':
+                printAndLog("Before dump {}".format(cmd1) ), logFile)
             os.system(cmd1)
             
             ##########################
