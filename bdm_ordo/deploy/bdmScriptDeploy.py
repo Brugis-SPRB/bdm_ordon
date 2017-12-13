@@ -81,11 +81,19 @@ if __name__ == "__main__":
 					srcConf = os.path.join(os.path.dirname(__file__),'/ordonnancement/localConf_diff.py')
 					f.storbinary('STOR %s' % 'localConf.py', open(srcConf, 'rb'))
 					f.storbinary('STOR %s' % 'bdmScriptInstall.py', open(srcInstallScript, 'rb'))						
+					
 					f.cwd(DBRUC._dirStaging)
 					f.storbinary('STOR %s' % filename, open(localFile, 'rb'))
 					srcConf = os.path.join(os.path.dirname(__file__),'/ordonnancement/localConf_staging.py')						
 					f.storbinary('STOR %s' % 'localConf.py', open(srcConf, 'rb'))						
 					f.storbinary('STOR %s' % 'bdmScriptInstall.py', open(srcInstallScript, 'rb'))	
+					
+					f.cwd(DBRUC._dirProd)
+					f.storbinary('STOR %s' % filename, open(localFile, 'rb'))
+					srcConf = os.path.join(os.path.dirname(__file__),'/ordonnancement/localConf_prod.py')						
+					f.storbinary('STOR %s' % 'localConf.py', open(srcConf, 'rb'))						
+					f.storbinary('STOR %s' % 'bdmScriptInstall.py', open(srcInstallScript, 'rb'))	
+					
 					f.cwd(ROOT)
 			
 			except ftplib.error_perm:
