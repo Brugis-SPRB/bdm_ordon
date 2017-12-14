@@ -9,9 +9,16 @@ import  sys
 import platform
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
-from shared.printAndLog import printAndLog
-import shared.databrugisconf as DBRUC
+
+sys.path.append("C:/scripts/custom")
+sys.path.append("C:/scripts/git_local/BDM_ORDO-master/bdm_ordo/shared")
+
+from printAndLog import printAndLog
+import databrugisconf as DBRUC
 import zipfile
+import pysftp
+import paramiko
+
 
 ################################################################################
 def zipdir(path, ziph):
@@ -50,7 +57,7 @@ if __name__ == "__main__":
 	custom_config_dir = "C:/scripts/custom/"
 	
 	
-	logFileName = "{}-{}.log".format(os.path.basename(__file__).replace('.py', ''),datetime.date.today().strftime('%d_%m_%Y'))
+	logFileName = "{}-{}.log".format(os.path.basename(__file__).replace('.py', ''),datetime.now().strftime('%d_%m_%Y'))
 	with open(os.path.join(os.path.dirname(__file__), logFileName), 'a') as logFile:
 		doLog('Startup deploy BDM Scripts ', logFile)
 		
@@ -73,15 +80,19 @@ if __name__ == "__main__":
 			
 			try:
 				filename= 'bdmscripts.zip'
-				srcInstallScript = os.path.join(os.path.dirname(__file__),'/deploy/bdmScriptsInstall.py')
+				srcInstallScript = os.path.join(os.path.dirname(__file__),'bdmScriptInstall.py')
 				srcdataconfig = os.path.join(custom_config_dir,'databrugisconf.py')
 				srcordoconfig = os.path.join(custom_config_dir,'ordoconf.py')
 				localFile = zipfilename
 				
+				pardir = os.path.realpath(os.path.join(os.path.dirname(__file__), os.pardir))				
+				ordodir = os.path.join(pardir,'ordonnancement')
+				
+				
 				if os.path.exists(localFile):
 					f.cwd(DBRUC._dirDiff)
 					f.storbinary('STOR %s' % filename, open(localFile, 'rb'))
-					srcConf = os.path.join(os.path.dirname(__file__),'/ordonnancement/localConf_diff.py')
+					srcConf = os.path.join(ordodir,'localConf_diff.py')
 					f.storbinary('STOR %s' % 'localConf.py', open(srcConf, 'rb'))
 					f.storbinary('STOR %s' % 'bdmScriptInstall.py', open(srcInstallScript, 'rb'))						
 					f.storbinary('STOR %s' % 'databrugisconf.py', open(srcdataconfig, 'rb'))
@@ -91,20 +102,27 @@ if __name__ == "__main__":
 					
 					f.cwd(DBRUC._dirStaging)
 					f.storbinary('STOR %s' % filename, open(localFile, 'rb'))
-					srcConf = os.path.join(os.path.dirname(__file__),'/ordonnancement/localConf_staging.py')						
+					srcConf = os.path.join(ordodir,'localConf_staging.py')						
 					f.storbinary('STOR %s' % 'localConf.py', open(srcConf, 'rb'))						
 					f.storbinary('STOR %s' % 'bdmScriptInstall.py', open(srcInstallScript, 'rb'))	
 					f.storbinary('STOR %s' % 'databrugisconf.py', open(srcdataconfig, 'rb'))
 					f.storbinary('STOR %s' % 'ordoconf.py', open(srcordoconfig, 'rb'))
 					
 					
-					f.cwd(DBRUC._dirProd)
-					f.storbinary('STOR %s' % filename, open(localFile, 'rb'))
-					srcConf = os.path.join(os.path.dirname(__file__),'/ordonnancement/localConf_prod.py')						
-					f.storbinary('STOR %s' % 'localConf.py', open(srcConf, 'rb'))						
-					f.storbinary('STOR %s' % 'bdmScriptInstall.py', open(srcInstallScript, 'rb'))	
-					f.storbinary('STOR %s' % 'databrugisconf.py', open(srcdataconfig, 'rb'))
-					f.storbinary('STOR %s' % 'ordoconf.py', open(srcordoconfig, 'rb'))
+					
+
+
+					cnopts = pysftp.CnOpts()
+					cnopts.hostkeys = None
+
+					sftp = pysftp.Connection('xxx', username='xxx', password='xxx', cnopts=cnopts)
+					with sftp.cd('xxx/xxx'):
+						sftp.put(localFile)
+						srcConf = os.path.join(ordodir,'localConf_prod.py')
+						sftp.put(srcConf)						
+						sftp.put(srcInstallScript)	
+						sftp.put(srcdataconfig)
+						sftp.put(srcordoconfig)
 					
 					
 					f.cwd(ROOT)
