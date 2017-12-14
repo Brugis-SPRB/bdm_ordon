@@ -7,7 +7,6 @@ import socket
 from datetime import datetime
 import  sys
 import platform
-from distutils.tests.test_install_scripts import InstallScriptsTestCase
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 from shared.printAndLog import printAndLog
@@ -48,6 +47,9 @@ if __name__ == "__main__":
 	path_to_zip_file = os.pardir
 	
 	
+	custom_config_dir = "C:/scripts/custom/"
+	
+	
 	logFileName = "{}-{}.log".format(os.path.basename(__file__).replace('.py', ''),datetime.date.today().strftime('%d_%m_%Y'))
 	with open(os.path.join(os.path.dirname(__file__), logFileName), 'a') as logFile:
 		doLog('Startup deploy BDM Scripts ', logFile)
@@ -69,10 +71,11 @@ if __name__ == "__main__":
 			###############################
 			# deploy
 			
-			
 			try:
 				filename= 'bdmscripts.zip'
 				srcInstallScript = os.path.join(os.path.dirname(__file__),'/deploy/bdmScriptsInstall.py')
+				srcdataconfig = os.path.join(custom_config_dir,'databrugisconf.py')
+				srcordoconfig = os.path.join(custom_config_dir,'ordoconf.py')
 				localFile = zipfilename
 				
 				if os.path.exists(localFile):
@@ -81,18 +84,28 @@ if __name__ == "__main__":
 					srcConf = os.path.join(os.path.dirname(__file__),'/ordonnancement/localConf_diff.py')
 					f.storbinary('STOR %s' % 'localConf.py', open(srcConf, 'rb'))
 					f.storbinary('STOR %s' % 'bdmScriptInstall.py', open(srcInstallScript, 'rb'))						
+					f.storbinary('STOR %s' % 'databrugisconf.py', open(srcdataconfig, 'rb'))
+					f.storbinary('STOR %s' % 'ordoconf.py', open(srcordoconfig, 'rb'))
+					
+		
 					
 					f.cwd(DBRUC._dirStaging)
 					f.storbinary('STOR %s' % filename, open(localFile, 'rb'))
 					srcConf = os.path.join(os.path.dirname(__file__),'/ordonnancement/localConf_staging.py')						
 					f.storbinary('STOR %s' % 'localConf.py', open(srcConf, 'rb'))						
 					f.storbinary('STOR %s' % 'bdmScriptInstall.py', open(srcInstallScript, 'rb'))	
+					f.storbinary('STOR %s' % 'databrugisconf.py', open(srcdataconfig, 'rb'))
+					f.storbinary('STOR %s' % 'ordoconf.py', open(srcordoconfig, 'rb'))
+					
 					
 					f.cwd(DBRUC._dirProd)
 					f.storbinary('STOR %s' % filename, open(localFile, 'rb'))
 					srcConf = os.path.join(os.path.dirname(__file__),'/ordonnancement/localConf_prod.py')						
 					f.storbinary('STOR %s' % 'localConf.py', open(srcConf, 'rb'))						
 					f.storbinary('STOR %s' % 'bdmScriptInstall.py', open(srcInstallScript, 'rb'))	
+					f.storbinary('STOR %s' % 'databrugisconf.py', open(srcdataconfig, 'rb'))
+					f.storbinary('STOR %s' % 'ordoconf.py', open(srcordoconfig, 'rb'))
+					
 					
 					f.cwd(ROOT)
 			
