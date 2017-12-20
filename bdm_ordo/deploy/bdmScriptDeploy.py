@@ -118,7 +118,12 @@ if __name__ == "__main__":
 					with sftp.cd(DBRUC._sftpROOT):
 						sftp.put(localFile)
 						srcConf = os.path.join(ordodir,'localConf_prod.py')
-						sftp.put(srcConf)						
+						sftp.put(srcConf)
+						try:
+							sftp.remove('localConf.py')
+						except:
+							pass						
+						sftp.rename('localConf_prod.py', 'localConf.py')
 						sftp.put(srcInstallScript)	
 						sftp.put(srcdataconfig)
 						sftp.put(srcordoconfig)
