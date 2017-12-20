@@ -20,9 +20,9 @@ _staging_todownload_schemas  = ["xxx"]
 
 
 
-_dirDiff                      = ['/xxx/xxx/']
-_dirStaging                   = ['/xxx/xxx/']
-_dirProd                      = ['/xxx/xxx/']
+_dirDiff                      = '/xxx/xxx/'
+_dirStaging                   = '/xxx/xxx/'
+_dirProd                      = '/xxx/xxx/'
 
 
 _allschemasdown               = ["xxx","xxx"]
@@ -49,5 +49,11 @@ _db_dbname                     = 'xxx'
 _ftpHOST = 'xxx'
 _ftpLOGIN = 'xxx'
 _ftpPASWD = 'xxx'
+
+_sftpHOST = 'xxx'
+_sftpLOGIN = 'xxx'
+_sftpPASWD = 'xxx'
+
+_sftpROOT = 'xxx/xxx'
 
 _sendMail = False
