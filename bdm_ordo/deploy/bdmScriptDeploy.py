@@ -11,7 +11,6 @@ import platform
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 
 sys.path.append("C:/scripts/custom")
-sys.path.append("C:/scripts/git_local/BDM_ORDO-master/bdm_ordo/shared")
 
 from printAndLog import printAndLog
 import databrugisconf as DBRUC
@@ -115,8 +114,8 @@ if __name__ == "__main__":
 					cnopts = pysftp.CnOpts()
 					cnopts.hostkeys = None
 
-					sftp = pysftp.Connection('xxx', username='xxx', password='xxx', cnopts=cnopts)
-					with sftp.cd('xxx/xxx'):
+					sftp = pysftp.Connection(DBRUC._sftpHOST, username=DBRUC._sftpLOGIN, password=DBRUC._sftpPASWD, cnopts=cnopts)
+					with sftp.cd(DBRUC._sftpROOT):
 						sftp.put(localFile)
 						srcConf = os.path.join(ordodir,'localConf_prod.py')
 						sftp.put(srcConf)						
