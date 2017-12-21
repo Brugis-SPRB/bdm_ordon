@@ -7,12 +7,13 @@ import subprocess
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 
+from shared.printAndLog import printAndLog
 import shared.ordoconf as OCONF
 import localConf as LCONF
 import globalConf as GCONF
 
 
-from shared.printAndLog import printAndLog
+
 
 
 
@@ -29,7 +30,7 @@ if __name__ == "__main__":
     logFileName = "{}-{}.log".format(os.path.basename(__file__).replace('.py', ''),datetime.date.today().strftime('%d_%m_%Y'))
     
     parentDir = os.path.join(os.path.dirname(__file__), os.pardir)
-    print parentDir
+    print (parentDir)
     
     with open(os.path.join(OCONF._ordopath, logFileName), 'a') as logFile:
         printAndLog("Start Local Ordo", logFile)

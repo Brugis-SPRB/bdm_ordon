@@ -81,7 +81,7 @@ if __name__ == "__main__":
             f.quit()
         except Exception, e:
             f.close()
-            print "Exception {}"
+            print ("Exception {}")
         
         ########################################
         # copy prod to local replica        
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         try:
             copyfile(prodtokenfile, localFile)
         except Exception, e:
-            print "Exception({}): {}".format(e.errno, e.strerror)
+            print ("Exception({}): {}".format(e.errno, e.strerror))
         
         
         
