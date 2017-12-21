@@ -16,7 +16,7 @@ import zipfile
 ################################################################################
 
 def doLog(myLine, myFile):
-	print myLine
+	print (myLine)
 	if myLine is None:
 		myFile.write("{}\n".format(datetime.today()) )
 	else:
@@ -85,8 +85,23 @@ if __name__ == "__main__":
 				## copy custom localConf.py at the right place
 				src_localConf = os.path.join(os.path.dirname(__file__),'localConf.py')
 				dest_localConf = os.path.join(script_dir,'ordonnancement/localConf.py')
-				
+				dest_OrdoDir = os.path.join(script_dir,'ordonnancement/')
 				shutil.move(src_localConf,dest_localConf)
+				
+				
+				## copy restricted config at the right place
+				##     ordoconf
+				src_ordoConf = os.path.join(os.path.dirname(__file__),'ordoconf.py')
+				dest_ordoConf = os.path.join(script_dir,'shared/ordoconf.py')
+				shutil.move(src_ordoConf,dest_ordoConf)
+				
+				##     databrugisconf
+				src_databrugisConf = os.path.join(os.path.dirname(__file__),'databrugisconf.py')
+				dest_databrugisConf = os.path.join(script_dir,'shared/databrugisconf.py')
+				shutil.move(src_databrugisConf,dest_databrugisConf)
+				
+				
+				
 				
 				doLog('Conf file moved', logFile)
 				
@@ -97,12 +112,23 @@ if __name__ == "__main__":
 				doLog('Zip file removed', logFile)
 		
 				## Add ORDO RELATED CRON
-				job = cron.new(command='~/bdm_env/bin/python  ./bdmscripts/synchro/ordonnancement/startup.py >> ./bdmscripts/startup.log 2>&1',comment='Bdm Ordo Process')			
+				job = cron.new(command='~/bdm_env/bin/python  ./bdmscripts/ordonnancement/startup.py >> ./bdmscripts/startup.log 2>&1',comment='Bdm Ordo Process')			
 				job.hour.on(21)
-				job2 = cron.new(command='~/bdm_env/bin/python  ./bdmscripts/synchro/ordonnancement/localOrdo.py >> ./bdmscripts/localOrdo.log 2>&1',comment='Bdm Ordo Process')			
+				job2 = cron.new(command='~/bdm_env/bin/python  ./bdmscripts/ordonnancement/localOrdo.py >> ./bdmscripts/localOrdo.log 2>&1',comment='Bdm Ordo Process')			
 				job2.minute.every(5)
-				job3 = cron.new(command='~/bdm_env/bin/python  ./bdmscripts/synchro/ordonnancement/postMaster.py >> ./bdmscripts/postMaster.log 2>&1',comment='Bdm Ordo Process')			
-				job3.minute.every(6)
+				
+				## Post master scheduled only for prod
+				## retrieve config 
+				sys.path.append(dest_OrdoDir)
+				import localConf
+				## add cron
+				if localConf._envName == "PROD":
+					doLog('Add postmaster Cron', logFile)
+					job3 = cron.new(command='~/bdm_env/bin/python  ./bdmscripts/ordonnancement/postMaster.py >> ./bdmscripts/postMaster.log 2>&1',comment='Bdm Ordo Process')			
+					job3.minute.every(6)
+				else:
+					doLog('Not PROD', logFile)
+					
 				
 				doLog('Job added', logFile)
 	
