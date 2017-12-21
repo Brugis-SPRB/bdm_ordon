@@ -42,7 +42,7 @@ if __name__ == "__main__":
                 'brugis_publish',
                 fullpath)
             if dlevel == 'V':
-                printAndLog("Before dump {}".format(cmd1) ), logFile)
+                printAndLog("Before dump {}".format(cmd1), logFile)
             os.system(cmd1)
             
             ##########################
