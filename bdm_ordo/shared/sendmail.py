@@ -36,7 +36,7 @@ def send_mail_ext(subject, body, recipients):
         server = smtplib.SMTP('relay.XXX')
         server.ehlo()
         server.sendmail(sender, receivers, msg)
-        print "Successfully sent mail"
+        print ("Successfully sent mail")
     except Exception as e:
         print "Error : Unable to send email", e.strerror
 

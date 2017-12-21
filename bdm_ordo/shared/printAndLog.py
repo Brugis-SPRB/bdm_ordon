@@ -1,11 +1,11 @@
 from datetime import datetime
 
 def printAndLog(myLine, myFile):
-    print myLine
+    print (myLine)
     if myLine is None:
-        myFile.write("{}\n".format(datetime.today()) )
+        myFile.write("{}\n".format(datetime.now()) )
     else:
-        myFile.write("{} : {}\n".format(datetime.today(),myLine) )
+        myFile.write("{} : {}\n".format(datetime.now(),myLine) )
 
 def printNow(myFile):
     printAndLog(None, myFile)
