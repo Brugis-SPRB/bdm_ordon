@@ -29,9 +29,9 @@ if __name__ == "__main__":
 			printAndLog('Startup ftp download', logFile)		
 			nodename = platform.node()
 			if mode == "EMUL":
-                printAndLog("EMULATION MODE", logFile)
-                OCONF.tokenFileWriteDone(wfstepId) 
-                exit()
+				printAndLog("EMULATION MODE", logFile)
+				OCONF.tokenFileWriteDone(wfstepId) 
+				exit()
 			try:
 				f = ftplib.FTP(DBRUC._ftpHOST, DBRUC._ftpLOGIN, DBRUC._ftpPASWD)
 			except (socket.error, socket.gaierror), e:
