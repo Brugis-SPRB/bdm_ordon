@@ -23,7 +23,13 @@ import csv
 
 ################################################################################
 
-
+def prepareMessage(myLine):
+    with open(os.path.join(OCONF._ordopath, "ordo.msg"), 'a') as notifyFile:
+        print (myLine)
+        if myLine is None:
+            notifyFile.write("{}\n".format(datetime.datetime.now()) )
+        else:
+            notifyFile.write("{} : {}\n".format(datetime.datetime.now(),myLine) )
 
 
 if __name__ == "__main__":
@@ -63,6 +69,9 @@ if __name__ == "__main__":
                     else:
                         #Kill process 
                         os.kill(startpid, signal.SIG_DFL)
+                        msg = "Kill process step {}".format(tokencontent['step'])
+                        prepareMessage(msg)
+                        
                         if row['SRVOUT'] != LCONF._envName:
                             newstate = 'transit'
                         else:
@@ -78,6 +87,9 @@ if __name__ == "__main__":
                     newstep = row['STOUTOK']
                     break
                 elif tokencontent['state'] == 'fail':
+                    msg = "Failure at step {}".format(tokencontent['step'])
+                    prepareMessage(msg)
+                    
                     if row['SRVOUT'] != LCONF._envName:
                         newstate = 'transit'
                     else:
