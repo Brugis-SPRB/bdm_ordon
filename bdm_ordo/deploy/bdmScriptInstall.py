@@ -22,6 +22,9 @@ def doLog(myLine, myFile):
 	else:
 		myFile.write("{} : {}\n".format(datetime.today(),myLine) )
 
+def count_iterable(i):
+	return sum(1 for e in i)
+
 if __name__ == "__main__":
 	##running script
 	ordorunning = False
@@ -29,8 +32,11 @@ if __name__ == "__main__":
 	## Copy zip and localConf from ftp directory
 	
 	src_zipfilename = os.path.join(os.path.expanduser("~"),'ftp_root/databrugis_transfer/bdmscripts.zip')
-	dest_zipfilename = os.path.join(os.path.expanduser("~"),'bdmscripts.zip')
 	
+	src_rinstall = os.path.join(os.path.expanduser("~"),'ftp_root/databrugis_transfer/rinstall')
+	
+	
+	dest_zipfilename = os.path.join(os.path.expanduser("~"),'bdmscripts.zip')
 	
 	script_dir = os.path.join(os.path.expanduser("~"),'bdmscripts') 
 	
@@ -48,6 +54,13 @@ if __name__ == "__main__":
 				exc_type, exc_value, exc_traceback = sys.exc_info()
 				traceback.print_exception(exc_type, exc_value, exc_traceback,limit=2, file=sys.stdout)
 
+			if os.path.exists(src_rinstall):
+				os.remove(src_rinstall)
+			else:
+				doLog('Nothing to install abort', logFile)
+				sys.exit(0)
+			
+			
 			if os.path.exists(src_zipfilename):
 				doLog('Zip exist', logFile)
 				
@@ -100,8 +113,7 @@ if __name__ == "__main__":
 				dest_databrugisConf = os.path.join(script_dir,'shared/databrugisconf.py')
 				shutil.move(src_databrugisConf,dest_databrugisConf)
 				
-				
-				
+
 				
 				doLog('Conf file moved', logFile)
 				
@@ -110,7 +122,15 @@ if __name__ == "__main__":
 				if os.path.exists(src_zipfilename):
 					os.remove(src_zipfilename)
 				doLog('Zip file removed', logFile)
-		
+				
+				## Add myself to CRON 
+				lstIn = cron.find_comment('Bdm Ordo Install')
+				
+				if count_iterable(lstIn) < 1: 
+					jobinstall = cron.new(command='~/bdm_env/bin/python  {} 2>&1'.format(os.path.abspath(__file__)),comment='Bdm Ordo Install')			
+					jobinstall.minute.every(15)
+				
+				
 				## Add ORDO RELATED CRON
 				job = cron.new(command='~/bdm_env/bin/python  ./bdmscripts/ordonnancement/startup.py >> ./bdmscripts/startup.log 2>&1',comment='Bdm Ordo Process')			
 				job.hour.on(21)

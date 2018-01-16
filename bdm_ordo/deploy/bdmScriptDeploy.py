@@ -12,7 +12,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 
 sys.path.append("C:/scripts/custom")
 
-from printAndLog import printAndLog
+from shared.printAndLog import printAndLog
 import databrugisconf as DBRUC
 import zipfile
 import pysftp
@@ -82,6 +82,10 @@ if __name__ == "__main__":
 				srcInstallScript = os.path.join(os.path.dirname(__file__),'bdmScriptInstall.py')
 				srcdataconfig = os.path.join(custom_config_dir,'databrugisconf.py')
 				srcordoconfig = os.path.join(custom_config_dir,'ordoconf.py')
+				##############################
+				# force remote install
+				srcrinstall = os.path.join(custom_config_dir,'rinstall')
+				
 				localFile = zipfilename
 				
 				pardir = os.path.realpath(os.path.join(os.path.dirname(__file__), os.pardir))				
@@ -96,6 +100,8 @@ if __name__ == "__main__":
 					f.storbinary('STOR %s' % 'bdmScriptInstall.py', open(srcInstallScript, 'rb'))						
 					f.storbinary('STOR %s' % 'databrugisconf.py', open(srcdataconfig, 'rb'))
 					f.storbinary('STOR %s' % 'ordoconf.py', open(srcordoconfig, 'rb'))
+					f.storbinary('STOR %s' % 'rinstall', open(srcrinstall, 'rb'))
+					
 					
 		
 					
@@ -106,6 +112,7 @@ if __name__ == "__main__":
 					f.storbinary('STOR %s' % 'bdmScriptInstall.py', open(srcInstallScript, 'rb'))	
 					f.storbinary('STOR %s' % 'databrugisconf.py', open(srcdataconfig, 'rb'))
 					f.storbinary('STOR %s' % 'ordoconf.py', open(srcordoconfig, 'rb'))
+					f.storbinary('STOR %s' % 'rinstall', open(srcrinstall, 'rb'))
 					
 					
 					
@@ -127,6 +134,11 @@ if __name__ == "__main__":
 						sftp.put(srcInstallScript)	
 						sftp.put(srcdataconfig)
 						sftp.put(srcordoconfig)
+						try:
+							sftp.put(srcrinstall)
+						except:
+							pass
+						
 					
 					
 					f.cwd(ROOT)
@@ -138,6 +150,8 @@ if __name__ == "__main__":
 		
 		if os.path.exists(zipfilename):
 			os.remove(zipfilename)
+			doLog('Zip file removed', logFile)
+		doLog('Done', logFile)
 					
 			
 
