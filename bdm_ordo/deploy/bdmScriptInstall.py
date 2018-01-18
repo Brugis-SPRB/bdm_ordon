@@ -113,6 +113,7 @@ if __name__ == "__main__":
 				dest_databrugisConf = os.path.join(script_dir,'shared/databrugisconf.py')
 				shutil.move(src_databrugisConf,dest_databrugisConf)
 				
+				## move csv file
 
 				
 				doLog('Conf file moved', logFile)
@@ -132,8 +133,6 @@ if __name__ == "__main__":
 				
 				
 				## Add ORDO RELATED CRON
-				job = cron.new(command='~/bdm_env/bin/python  ./bdmscripts/ordonnancement/startup.py >> ./bdmscripts/startup.log 2>&1',comment='Bdm Ordo Process')			
-				job.hour.on(21)
 				job2 = cron.new(command='~/bdm_env/bin/python  ./bdmscripts/ordonnancement/localOrdo.py >> ./bdmscripts/localOrdo.log 2>&1',comment='Bdm Ordo Process')			
 				job2.minute.every(5)
 				
@@ -143,6 +142,9 @@ if __name__ == "__main__":
 				import localConf
 				## add cron
 				if localConf._envName == "PROD":
+					doLog('Add starter Cron', logFile)
+					job = cron.new(command='~/bdm_env/bin/python  ./bdmscripts/ordonnancement/startup.py >> ./bdmscripts/startup.log 2>&1',comment='Bdm Ordo Process')							
+					job.hour.on(21)
 					doLog('Add postmaster Cron', logFile)
 					job3 = cron.new(command='~/bdm_env/bin/python  ./bdmscripts/ordonnancement/postMaster.py >> ./bdmscripts/postMaster.log 2>&1',comment='Bdm Ordo Process')			
 					job3.minute.every(6)
