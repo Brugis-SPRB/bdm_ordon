@@ -30,47 +30,46 @@ if __name__ == "__main__":
 			nodename = platform.node()
 			if mode == "EMUL":
 				printAndLog("EMULATION MODE", logFile)
-				OCONF.tokenFileWriteDone(wfstepId) 
-				exit()
-			try:
-				f = ftplib.FTP(DBRUC._ftpHOST, DBRUC._ftpLOGIN, DBRUC._ftpPASWD)
-			except (socket.error, socket.gaierror), e:
-				printAndLog('ERROR: cannot reach "%s"' % DBRUC._ftpHOST, logFile)
 			else:
-				printAndLog('*** Connected to host "%s"' % DBRUC._ftpHOST, logFile)
-				ROOT = f.pwd()
-	
-				#########################################
-				# Copy to prod
-				dirn = DBRUC._dirDiff
-				localDirn = DBRUC._dirProd 
-				schemas = DBRUC._prod_todownload_schemas
 				try:
-					f.cwd(dirn)
-				except ftplib.error_perm:
-					printAndLog('ERROR: cannot CD to "%s"' % dirn, logFile)
-					f.quit()
+					f = ftplib.FTP(DBRUC._ftpHOST, DBRUC._ftpLOGIN, DBRUC._ftpPASWD)
+				except (socket.error, socket.gaierror), e:
+					printAndLog('ERROR: cannot reach "%s"' % DBRUC._ftpHOST, logFile)
 				else:
-					printAndLog('*** Changed to "%s" folder' % dirn, logFile)
-					for schem in schemas:
-						filename = "{}{}.backup".format(DBRUC._db_dbname, schem)
-						
-						printAndLog('Download file "%s"' % filename, logFile)
-						localFile = os.path.join(localDirn, filename)
-						printAndLog('Local file "%s"' % localFile, logFile)
-						if os.path.exists(localFile):
-							os.remove(localFile)
-						try:
-							with open(localFile, "wb") as gFile:
-								f.retrbinary('RETR %s' % filename , gFile.write)
-						except Exception, e:
-							print "Exception({0}): {1}".format(e.errno, e.strerror)
-					f.cwd(ROOT)
-				f.quit()
-	
-			printAndLog( "{} done".format(wfstepId),logFile)
-			if DBRUC._sendMail:
-				send_mail('%s - %s - log - %s' % (nodename, os.path.basename(__file__), str(datetime.datetime.today())), logFile.read())
+					printAndLog('*** Connected to host "%s"' % DBRUC._ftpHOST, logFile)
+					ROOT = f.pwd()
+		
+					#########################################
+					# Copy to prod
+					dirn = DBRUC._dirDiff
+					localDirn = DBRUC._dirProd 
+					schemas = DBRUC._prod_todownload_schemas
+					try:
+						f.cwd(dirn)
+					except ftplib.error_perm:
+						printAndLog('ERROR: cannot CD to "%s"' % dirn, logFile)
+						f.quit()
+					else:
+						printAndLog('*** Changed to "%s" folder' % dirn, logFile)
+						for schem in schemas:
+							filename = "{}{}.backup".format(DBRUC._db_dbname, schem)
+							
+							printAndLog('Download file "%s"' % filename, logFile)
+							localFile = os.path.join(localDirn, filename)
+							printAndLog('Local file "%s"' % localFile, logFile)
+							if os.path.exists(localFile):
+								os.remove(localFile)
+							try:
+								with open(localFile, "wb") as gFile:
+									f.retrbinary('RETR %s' % filename , gFile.write)
+							except Exception:
+								print "Exception"
+						f.cwd(ROOT)
+					f.quit()
+		
+				printAndLog( "{} done".format(wfstepId),logFile)
+				if DBRUC._sendMail:
+					send_mail('%s - %s - log - %s' % (nodename, os.path.basename(__file__), str(datetime.datetime.today())), logFile.read())
 		OCONF.tokenFileWriteDone(wfstepId)		
 	except:
 		OCONF.tokenFileWriteFail(wfstepId)   		

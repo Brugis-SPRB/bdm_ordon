@@ -35,51 +35,50 @@ if __name__ == "__main__":
             
             if mode == "EMUL":
                 printAndLog("EMULATION MODE", logFile)
-                OCONF.tokenFileWriteDone(wfstepId) 
-                exit()
-            conn = psycopg2.connect(conn_s)
-            cur = conn.cursor()
-            
-            # Check that all expected files are present
-            for schem in DBRUC._diff_torestore_schemas:            
-                filename = '{}{}.backup'.format(DBRUC._db_dbname, schem)
-                fullpath = os.path.join(DBRUC._backuppath, filename)
-                if not os.path.exists(fullpath):
-                    printAndLog("Missing backup file {}".format(filename), logFile)
-                    raise Exception('Missing file')   
-            
-            
-            for schem in DBRUC._diff_torestore_schemas:            
-                cur.execute("DROP SCHEMA if exists {} CASCADE".format(schem))
-                conn.commit()
-            conn.close()
-            
-            for schem in DBRUC._diff_torestore_schemas:            
-                filename = '{}{}.backup'.format(dbName, schem)
-                logfilename = '{}{}.log'.format(dbName, schem)
-                fullpath = os.path.join(DBRUC._backuppath, filename)
-                cmd = "pg_restore --host {} --port 5432 --username {} --no-password  -d databrugis --verbose  {}  > {}".format(
-                    DBRUC._prod_db_host,
-                    DBRUC._db_userdump,
-                    fullpath,
-                    logfilename)
+            else:
+                conn = psycopg2.connect(conn_s)
+                cur = conn.cursor()
+                
+                # Check that all expected files are present
+                for schem in DBRUC._diff_torestore_schemas:            
+                    filename = '{}{}.backup'.format(DBRUC._db_dbname, schem)
+                    fullpath = os.path.join(DBRUC._backuppath, filename)
+                    if not os.path.exists(fullpath):
+                        printAndLog("Missing backup file {}".format(filename), logFile)
+                        raise Exception('Missing file')   
+                
+                
+                for schem in DBRUC._diff_torestore_schemas:            
+                    cur.execute("DROP SCHEMA if exists {} CASCADE".format(schem))
+                    conn.commit()
+                conn.close()
+                
+                for schem in DBRUC._diff_torestore_schemas:            
+                    filename = '{}{}.backup'.format(dbName, schem)
+                    logfilename = '{}{}.log'.format(dbName, schem)
+                    fullpath = os.path.join(DBRUC._backuppath, filename)
+                    cmd = "pg_restore --host {} --port 5432 --username {} --no-password  -d databrugis --verbose  {}  > {}".format(
+                        DBRUC._prod_db_host,
+                        DBRUC._db_userdump,
+                        fullpath,
+                        logfilename)
+                    if dlevel == 'V':
+                        printAndLog(cmd, logFile)
+                    os.system(cmd)    
+                conn2 = psycopg2.connect(conn_s)
+                cur2 = conn2.cursor()
                 if dlevel == 'V':
-                    printAndLog(cmd, logFile)
-                os.system(cmd)    
-            conn2 = psycopg2.connect(conn_s)
-            cur2 = conn2.cursor()
-            if dlevel == 'V':
-                printAndLog("Before wf_intextinter_2integration", logFile)
-            cur2.execute("SELECT commonbrugis.wf_intextinter_2integration()")
-            if dlevel == 'V':
-                printAndLog("Before synchro_publish_tables", logFile)
-            cur2.execute("select commonbrugis.synchro_publish_tables()")
-            conn2.commit()
-
-            printAndLog( "{} done".format(wfstepId),logFile)
-            if DBRUC._sendMail:
-                nodename = platform.node()
-                send_mail('%s - %s - log - %s' % (nodename, os.path.basename(__file__), str(datetime.datetime.today())), logFile.read())
+                    printAndLog("Before wf_intextinter_2integration", logFile)
+                cur2.execute("SELECT commonbrugis.wf_intextinter_2integration()")
+                if dlevel == 'V':
+                    printAndLog("Before synchro_publish_tables", logFile)
+                cur2.execute("select commonbrugis.synchro_publish_tables()")
+                conn2.commit()
+    
+                printAndLog( "{} done".format(wfstepId),logFile)
+                if DBRUC._sendMail:
+                    nodename = platform.node()
+                    send_mail('%s - %s - log - %s' % (nodename, os.path.basename(__file__), str(datetime.datetime.today())), logFile.read())
             OCONF.tokenFileWriteDone(wfstepId)    
     except:
         OCONF.tokenFileWriteFail(wfstepId)
