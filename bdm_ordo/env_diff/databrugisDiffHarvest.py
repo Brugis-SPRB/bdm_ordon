@@ -40,29 +40,28 @@ if __name__ == "__main__":
             nodename = platform.node()
             if mode == "EMUL":
                 printAndLog("EMULATION MODE", logFile)
-                OCONF.tokenFileWriteDone(wfstepId) 
-                exit()
-            for sch in schemas:
-                filename = "{}{}".format(dbname, sch)            
-                printAndLog("Export schema %s." % sch, logFile)
-                
-                fullpath = os.path.join(DBRUC._dbexportpath, filename)
-                if os.path.exists(fullpath):
-                    if dlevel == 'V':
-                        printAndLog("Cleaning %s of %s" % (DBRUC._dbexportpath, filename), logFile)
-                    os.remove(fullpath)
-                
-                
-                cmd1 = "pg_dump --host {} --port 5432 --username {} --no-password  --format custom --blobs --encoding UTF8 --schema {} --file {}".format(
-                    DBRUC._diff_db_host,
-                    DBRUC._db_userdump,
-                    sch,
-                    fullpath)
-                printAndLog("Execute command %s" % cmd1, logFile)
-                os.system(cmd1)
-            printAndLog( "{} done".format(wfstepId),logFile)            
-            if DBRUC._sendMail:
-                send_mail('%s - %s - log - %s' % (nodename, os.path.basename(__file__), str(datetime.datetime.today())), logFile.read())
+            else:
+                for sch in schemas:
+                    filename = "{}{}".format(dbname, sch)            
+                    printAndLog("Export schema %s." % sch, logFile)
+                    
+                    fullpath = os.path.join(DBRUC._dbexportpath, filename)
+                    if os.path.exists(fullpath):
+                        if dlevel == 'V':
+                            printAndLog("Cleaning %s of %s" % (DBRUC._dbexportpath, filename), logFile)
+                        os.remove(fullpath)
+                    
+                    
+                    cmd1 = "pg_dump --host {} --port 5432 --username {} --no-password  --format custom --blobs --encoding UTF8 --schema {} --file {}".format(
+                        DBRUC._diff_db_host,
+                        DBRUC._db_userdump,
+                        sch,
+                        fullpath)
+                    printAndLog("Execute command %s" % cmd1, logFile)
+                    os.system(cmd1)
+                printAndLog( "{} done".format(wfstepId),logFile)            
+                if DBRUC._sendMail:
+                    send_mail('%s - %s - log - %s' % (nodename, os.path.basename(__file__), str(datetime.datetime.today())), logFile.read())
         OCONF.tokenFileWriteDone(wfstepId)    
     except:
         OCONF.tokenFileWriteFail(wfstepId)        
