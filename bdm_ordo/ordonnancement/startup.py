@@ -18,9 +18,9 @@ if __name__ == '__main__':
         try:
             printAndLog("Exec Startup", logFile)
             ################
-            ## Just ask transfer
+            ## Just ask transit
             tokenfile = open(OCONF._tokenFileName,'w')
-            tokenfile.write("STARTUP,transit")
+            tokenfile.write("DUMMY,done")
             tokenfile.close()
             
             printAndLog("Startup Done", logFile)

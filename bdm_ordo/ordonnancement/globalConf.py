@@ -9,5 +9,5 @@ _executionMode = "NORM"|"EMUL"
 _debugLevel = "P"|"D"|"V"
 '''
 
-_executionMode = "EMUL"
-_debugLevel = "PROD"
+_executionMode = "NORM"
+_debugLevel = "P"

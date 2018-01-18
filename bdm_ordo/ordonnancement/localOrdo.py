@@ -43,12 +43,12 @@ if __name__ == "__main__":
         printAndLog("Running on {}".format(LCONF._envName), logFile)
         
        
-        csvpath = os.path.join(OCONF._ordopath,'globalordo.csv')        
+        csvpath = os.path.join(os.path.dirname(__file__),'globalordo.csv')        
         csvfile = open(csvpath)            
         tokencontent = OCONF.parseTokenFile(OCONF._tokenFileName)
             
         
-        printAndLog("State is {}".format(tokencontent['state']), logFile)
+        printAndLog("State is {} Step is {}".format(tokencontent['state'], tokencontent['step']), logFile)
                 
         reader = csv.DictReader(csvfile)
         newstep = 'undefined'
@@ -58,7 +58,9 @@ if __name__ == "__main__":
         # Evaluation du next step sur base du step actif dans le fichier csv et de l'�tat actuel
         for row in reader:
             if row['STIN'] == tokencontent['step'] and row['SRVIN'] == LCONF._envName:                     
+                printAndLog("Step found", logFile)
                 if tokencontent['state'] == 'running':
+                    printAndLog("State running stop local ordo", logFile)
                     exit(0)
                 elif tokencontent['state'] == 'pending':
                     startpid = OCONF.parseKeepAlive(OCONF._keepAliveFileName)
@@ -79,10 +81,13 @@ if __name__ == "__main__":
                             newstep = row['STOUTNOK']
                     break
                 elif tokencontent['state'] == 'done':
-                    OCONF.keepAliveFileWrite(OCONF._keepAliveFileName,True)
+                    OCONF.keepAliveFileWrite(OCONF._keepAliveFileName,-1,True)
+                    printAndLog("SRVOUT == {}".format(row['SRVOUT']), logFile)
                     if row['SRVOUT'] != LCONF._envName:
+                        printAndLog("State is done transit asked", logFile)
                         newstate = 'transit'
                     else:
+                        printAndLog("State is done", logFile)
                         newstate = 'pending'
                     newstep = row['STOUTOK']
                     break
@@ -127,11 +132,11 @@ if __name__ == "__main__":
                 
                 printAndLog("launch script L3 ", logFile)
                 #Run the script
-                OCONF.keepAliveFileWrite(OCONF._keepAliveFileName,False)
+                
                 try:
                     printAndLog("Script path {}".format(scriptpath), logFile)
                     printAndLog("Step {}".format(newstep), logFile)
-                    printAndLog("Step {}".format(LCONF._envName), logFile)
+                    printAndLog("Env {}".format(LCONF._envName), logFile)
                     
                 
                     cmd = "{} {} -wf={} -ctx={} -mode={} -d={}".format(pythonexec, os.path.join(scriptpath,script),newstep,LCONF._envName,GCONF._executionMode,GCONF._debugLevel)
@@ -143,11 +148,11 @@ if __name__ == "__main__":
                     OCONF.keepAliveFileWrite(OCONF._keepAliveFileName,p.pid,False)
                     #subprocess.call(cmd)
                     #os.system(cmd)
-                except Exception, e:
+                except Exception:
                     printAndLog("launch script L4 ", logFile)                
-                    printAndLog("Exception {}".format(e.strerror), logFile)
+                    printAndLog("Exception", logFile)
         
-                
+                printAndLog("Script started", logFile)
                 
                 break
             ###########################

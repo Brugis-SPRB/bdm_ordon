@@ -132,7 +132,7 @@ if __name__ == "__main__":
             f.close()
             f.cwd(ROOT)
             f.quit()
-        except Exception, e:
+        except Exception:
             f.close()
             print ("Exception {}")
         
@@ -147,15 +147,15 @@ if __name__ == "__main__":
             os.remove(localFile)
         try:
             copyfile(prodtokenfile, localFile)
-        except Exception, e:
-            print ("Exception({}): {}".format(e.errno, e.strerror))
+        except Exception:
+            print ("Exception")
         
         if os.path.exists(localmsg):
             os.remove(localmsg)
         try:
             copyfile(prodmsgfile, localmsg)
-        except Exception, e:
-            print ("Exception({}): {}".format(e.errno, e.strerror))
+        except Exception:
+            print ("Exception")
         
         
         
@@ -259,12 +259,12 @@ if __name__ == "__main__":
             printAndLog("Copy prod {} {} ".format(newtokenfileName, prodtokenfileName), logFile)
             copyfile(newtokenfileName, prodtokenfileName)
             printAndLog("Broadcast is done", logFile)            
-        except Exception, e:
+        except Exception:
             try:
                 f.close()
             except:
                 pass
-            printAndLog("Exception({}): {}".format(e.errno, e.strerror), logFile)
+            printAndLog("Exception")
                 
         
 
