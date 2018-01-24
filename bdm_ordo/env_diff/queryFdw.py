@@ -15,7 +15,14 @@ import shared.databrugisconf as DBRUC
 import shared.ordoconf as OCONF
 
 ################################################################################
-
+def prepareMessage(myLine):
+    with open(os.path.join(OCONF._ordopath, "ordo.msg"), 'a') as notifyFile:
+        print (myLine)
+        if myLine is None:
+            notifyFile.write("{}\n".format(datetime.datetime.now()) )
+        else:
+            notifyFile.write("{} : {}\n".format(datetime.datetime.now(),myLine) )
+            
 if __name__ == "__main__":
     wfstepId = OCONF.getWorkflowID()
     mode = OCONF.getExecMode()
@@ -41,12 +48,15 @@ if __name__ == "__main__":
                     printAndLog("Before wf_intextinter_1synchro", logFile)    
                     cur = conn.cursor()
                     cur.execute("SELECT commonbrugis.wf_intextinter_1synchro()")
+                    rows = cur.fetchall()
+                    for row in rows:
+                        msg = row[0]
+                        print(msg)
+                        if len(msg) > 10:
+                            prepareMessage("DB Error {}".format(msg))
                     conn.commit()
 
                 printAndLog( "{} done".format(wfstepId),logFile)
-                if DBRUC._sendMail:
-                    nodename = platform.node()
-                    send_mail('%s - %s - log - %s' % (nodename, os.path.basename(__file__), str(datetime.datetime.today())), logFile.read())
         OCONF.tokenFileWriteDone(wfstepId)        
     except:
         pass

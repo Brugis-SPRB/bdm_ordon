@@ -33,8 +33,8 @@ if __name__ == "__main__":
     # check for schemaname
     schemas = DBRUC._diff_toharvest_schemas
     logFileName = "{}-{}.log".format(os.path.basename(__file__).replace('.py', ''),datetime.date.today().strftime('%d_%m_%Y'))
-    try:
-        with open(os.path.join(DBRUC._mailDir, logFileName), 'a') as logFile:
+    with open(os.path.join(DBRUC._mailDir, logFileName), 'a') as logFile:
+        try:
             printAndLog( "{} running".format(wfstepId),logFile)
             printAndLog("Startup harvest.", logFile)
             nodename = platform.node()
@@ -60,8 +60,9 @@ if __name__ == "__main__":
                     printAndLog("Execute command %s" % cmd1, logFile)
                     os.system(cmd1)
                 printAndLog( "{} done".format(wfstepId),logFile)            
-                if DBRUC._sendMail:
-                    send_mail('%s - %s - log - %s' % (nodename, os.path.basename(__file__), str(datetime.datetime.today())), logFile.read())
-        OCONF.tokenFileWriteDone(wfstepId)    
-    except:
-        OCONF.tokenFileWriteFail(wfstepId)        
+            OCONF.tokenFileWriteDone(wfstepId)    
+            printAndLog( "write is done",logFile) 
+        except:
+            printAndLog( "failure {}".format(sys.exc_info()[0]),logFile)
+            OCONF.tokenFileWriteFail(wfstepId)   
+            printAndLog( "write failure",logFile)     
