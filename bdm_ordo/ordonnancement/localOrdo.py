@@ -61,7 +61,24 @@ if __name__ == "__main__":
                 printAndLog("Step found", logFile)
                 if tokencontent['state'] == 'running':
                     printAndLog("State running stop local ordo", logFile)
-                    exit(0)
+                    startpid = OCONF.parseKeepAlive(OCONF._keepAliveFileName)
+                    
+                    if startpid < 0 :
+                        #Times remains let the process doing the job 
+                        exit(0)
+                    else:
+                        #Kill process 
+                        os.kill(startpid, signal.SIG_DFL)
+                        msg = "Kill process step {}".format(tokencontent['step'])
+                        prepareMessage(msg)
+                        
+                        if row['SRVOUT'] != LCONF._envName:
+                            newstate = 'transit'
+                        else:
+                            newstate = 'done'
+                        newstep = row['STOUTNOK']
+                    break
+                    
                 elif tokencontent['state'] == 'pending':
                     startpid = OCONF.parseKeepAlive(OCONF._keepAliveFileName)
                     
@@ -77,8 +94,8 @@ if __name__ == "__main__":
                         if row['SRVOUT'] != LCONF._envName:
                             newstate = 'transit'
                         else:
-                            newstate = 'pending'
-                            newstep = row['STOUTNOK']
+                            newstate = 'done'
+                        newstep = row['STOUTNOK']
                     break
                 elif tokencontent['state'] == 'done':
                     OCONF.keepAliveFileWrite(OCONF._keepAliveFileName,-1,True)
@@ -87,7 +104,7 @@ if __name__ == "__main__":
                         printAndLog("State is done transit asked", logFile)
                         newstate = 'transit'
                     else:
-                        printAndLog("State is done", logFile)
+                        printAndLog("State is done set pending", logFile)
                         newstate = 'pending'
                     newstep = row['STOUTOK']
                     break
@@ -158,6 +175,7 @@ if __name__ == "__main__":
             ###########################
             ## Le script doit s'exécuter sur un autre serveur
             else:
+                printAndLog("Run {} on another server".format(newstate), logFile)
                 OCONF.tokenFileWrite(OCONF._tokenFileName, newstate, newstep)
                 
         ####
