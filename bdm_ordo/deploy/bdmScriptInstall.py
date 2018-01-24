@@ -129,12 +129,12 @@ if __name__ == "__main__":
 				
 				if count_iterable(lstIn) < 1: 
 					jobinstall = cron.new(command='~/bdm_env/bin/python  {} 2>&1'.format(os.path.abspath(__file__)),comment='Bdm Ordo Install')			
-					jobinstall.minute.every(15)
+					jobinstall.minute.every(8)
 				
 				
 				## Add ORDO RELATED CRON
 				job2 = cron.new(command='~/bdm_env/bin/python  ./bdmscripts/ordonnancement/localOrdo.py >> ./bdmscripts/localOrdo.log 2>&1',comment='Bdm Ordo Process')			
-				job2.minute.every(5)
+				job2.minute.every(2)
 				
 				## Post master scheduled only for prod
 				## retrieve config 
@@ -147,7 +147,7 @@ if __name__ == "__main__":
 					job.hour.on(21)
 					doLog('Add postmaster Cron', logFile)
 					job3 = cron.new(command='~/bdm_env/bin/python  ./bdmscripts/ordonnancement/postMaster.py >> ./bdmscripts/postMaster.log 2>&1',comment='Bdm Ordo Process')			
-					job3.minute.every(6)
+					job3.minute.every(3)
 				else:
 					doLog('Not PROD', logFile)
 					
