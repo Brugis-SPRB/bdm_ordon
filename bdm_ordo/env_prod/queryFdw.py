@@ -15,14 +15,22 @@ import shared.ordoconf as OCONF
 
 ################################################################################
 
+def prepareMessage(myLine):
+    with open(os.path.join(OCONF._ordopath, "ordo.msg"), 'a') as notifyFile:
+        print (myLine)
+        if myLine is None:
+            notifyFile.write("{}\n".format(datetime.datetime.now()) )
+        else:
+            notifyFile.write("{} : {}\n".format(datetime.datetime.now(),myLine) )
+
 if __name__ == "__main__":
     wfstepId = OCONF.getWorkflowID() 
     mode = OCONF.getExecMode()
     dlevel = OCONF.getDebugLevel()
     OCONF.tokenFileWriteRunning(wfstepId)
-    try:
-        logFileName = "{}-{}.log".format(os.path.basename(__file__).replace('.py', ''),datetime.date.today().strftime('%d_%m_%Y'))
-        with open(os.path.join(DBRUC._mailDir, logFileName), 'a') as logFile:
+    logFileName = "{}-{}.log".format(os.path.basename(__file__).replace('.py', ''),datetime.date.today().strftime('%d_%m_%Y'))
+    with open(os.path.join(DBRUC._mailDir, logFileName), 'a') as logFile:
+        try:
             dbName = DBRUC._db_dbname
             printAndLog( "{} running".format(wfstepId),logFile)
             printAndLog("Startup queryFDW", logFile)
@@ -44,14 +52,20 @@ if __name__ == "__main__":
                       
                 cur = conn.cursor()
                 cur.execute("SELECT commonbrugis.wf_intextintra_1synchro()")
+                
+                rows = cur.fetchall()
+                for row in rows:
+                    msg = row[0]
+                    print(msg)
+                    if len(msg) > 10:
+                        prepareMessage("DB Error {}".format(msg))
+                
                 conn.commit()
     
                 printAndLog( "{} done".format(wfstepId),logFile)
-                if DBRUC._sendMail:
-                    nodename = platform.node()
-                    send_mail('%s - %s - log - %s' % (nodename, os.path.basename(__file__), str(datetime.datetime.today())), logFile.read())
-        OCONF.tokenFileWriteDone(wfstepId)    
-    except:
-        OCONF.tokenFileWriteFail(wfstepId)
+            OCONF.tokenFileWriteDone(wfstepId)    
+        except:
+            printAndLog( "failure {}".format(sys.exc_info()[0]),logFile)
+            OCONF.tokenFileWriteFail(wfstepId)
     
     

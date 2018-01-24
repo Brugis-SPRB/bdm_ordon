@@ -56,8 +56,6 @@ if __name__ == "__main__":
                         printAndLog("Execute command %s" % cmd, logFile)                                                                                                                                          
                     os.system(cmd)
                 printAndLog( "{} done".format(wfstepId),logFile)            
-                if DBRUC._sendMail:
-                    send_mail('%s - %s - log - %s' % (nodename,os.path.basename(__file__), str(datetime.datetime.today())), logFile.read())
         OCONF.tokenFileWriteDone(wfstepId)        
     except:
         OCONF.tokenFileWriteFail(wfstepId)       
