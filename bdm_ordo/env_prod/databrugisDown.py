@@ -1,15 +1,13 @@
 # -*- coding: latin_1 -*-
-# Python script for downloads
+# Bdm Downloads in Prod
 
 import ftplib
 import os
 import socket
 import datetime
 import sys
-import platform
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
-from shared.sendmail import send_mail
 from shared.printAndLog import printAndLog
 import shared.databrugisconf as DBRUC
 import shared.ordoconf as OCONF
@@ -27,7 +25,6 @@ if __name__ == "__main__":
 		with open(os.path.join(DBRUC._mailDir, logFileName), 'a') as logFile:
 			printAndLog( "{} running".format(wfstepId),logFile)
 			printAndLog('Startup ftp download', logFile)		
-			nodename = platform.node()
 			if mode == "EMUL":
 				printAndLog("EMULATION MODE", logFile)
 			else:
@@ -63,7 +60,7 @@ if __name__ == "__main__":
 								with open(localFile, "wb") as gFile:
 									f.retrbinary('RETR %s' % filename , gFile.write)
 							except Exception:
-								print "Exception"
+								printAndLog ("Exception {}".format(sys.exc_info()[0]))
 						f.cwd(ROOT)
 					f.quit()
 		

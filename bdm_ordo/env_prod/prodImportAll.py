@@ -1,11 +1,12 @@
+# -*- coding: latin_1 -*-
+# Restore external DB Schemas in PROD
+
 import psycopg2
 import os
 import datetime
-import platform
 import  sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
-from shared.sendmail import send_mail
 
 # -*- coding: latin_1 -*-
 
@@ -40,7 +41,7 @@ if __name__ == "__main__":
                 cur = conn.cursor()
                 
                 # Check that all expected files are present
-                for schem in DBRUC._diff_torestore_schemas:            
+                for schem in DBRUC._prod_torestore_schemas:            
                     filename = '{}{}.backup'.format(DBRUC._db_dbname, schem)
                     fullpath = os.path.join(DBRUC._backuppath, filename)
                     if not os.path.exists(fullpath):
@@ -48,12 +49,12 @@ if __name__ == "__main__":
                         raise Exception('Missing file')   
                 
                 
-                for schem in DBRUC._diff_torestore_schemas:            
+                for schem in DBRUC._prod_torestore_schemas:            
                     cur.execute("DROP SCHEMA if exists {} CASCADE".format(schem))
                     conn.commit()
                 conn.close()
                 
-                for schem in DBRUC._diff_torestore_schemas:            
+                for schem in DBRUC._prod_torestore_schemas:            
                     filename = '{}{}.backup'.format(dbName, schem)
                     logfilename = '{}{}.log'.format(dbName, schem)
                     fullpath = os.path.join(DBRUC._backuppath, filename)

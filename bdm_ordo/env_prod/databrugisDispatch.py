@@ -1,15 +1,13 @@
 # -*- coding: latin_1 -*-
-# Python script for Urbanalysis transfer of DB and templates to staging
+# Bdm FTP transfer of DB dumps
 
 import ftplib
 import os
 import socket
 import datetime
 import  sys
-import platform
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
-from shared.sendmail import send_mail
 from shared.printAndLog import printAndLog
 import shared.databrugisconf as DBRUC
 import shared.ordoconf as OCONF
@@ -21,7 +19,6 @@ if __name__ == "__main__":
 	dlevel = OCONF.getDebugLevel()
 	mode = OCONF.getExecMode()
 	OCONF.tokenFileWriteRunning(wfstepId)
-	nodename =  platform.node()
 	
 	dbname = DBRUC._db_dbname
 	logFileName = "{}-{}.log".format(os.path.basename(__file__).replace('.py', ''),datetime.date.today().strftime('%d_%m_%Y'))

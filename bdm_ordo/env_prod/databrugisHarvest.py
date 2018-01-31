@@ -1,14 +1,12 @@
 # -*- coding: latin_1 -*-
-# Python script for BruGIS Harvesting
+# Bdm Harvesting in PROD
 
 import os
 import datetime
 import socket
-import platform
 import  sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
-from  shared.sendmail import send_mail
 from   shared.printAndLog import printAndLog
 import shared.databrugisconf as DBRUC
 import shared.ordoconf as OCONF
@@ -34,7 +32,6 @@ if __name__ == "__main__":
         with open(os.path.join(DBRUC._mailDir, logFileName), 'a') as logFile:
             printAndLog( "{} running".format(wfstepId),logFile)
             printAndLog("Startup harvest.", logFile)
-            nodename =  platform.node()
             if mode == "EMUL":
                 printAndLog("EMULATION MODE", logFile)
             else:

@@ -1,5 +1,5 @@
 # -*- coding: latin_1 -*-
-# Python script for Urbanalysis transfer of DB and templates to staging
+# 
 
 import os
 import datetime
