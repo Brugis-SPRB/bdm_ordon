@@ -47,31 +47,36 @@ def getDebugLevel():
     return dlevel  
 
 def tokenFileWriteRunning(step):
-    tokenfile = open(_tokenFileName,'w')
+    tokenfile = open(_tokenFileName,'w+')
     tokenfile.write("{},running".format(step))
     tokenfile.close()
 
 def tokenFileWriteDone(step):
-    tokenfile = open(_tokenFileName,'w')
+    tokenfile = open(_tokenFileName,'w+')
     tokenfile.write("{},done".format(step))
     tokenfile.close()
     
 def tokenFileWrite(filename,status,step):
-    tokenfile = open(filename,'w')
+    tokenfile = open(filename,'w+')
     tokenfile.write("{},{}".format(step,status))
     tokenfile.close()
 
-def tokenFileWriteFail(filename,step):
-    tokenfile = open(filename,'w')
+def tokenFileWriteFail(step):
+    tokenfile = open(_tokenFileName,'w+')
     tokenfile.write("{},fail".format(step))
     tokenfile.close()
     
 def keepAliveFileWrite(filename,pid,reset):
-    kfile = open(filename,'w')
+    kfile = open(filename,'w+')
     if reset:
         kfile.write(" ")
     else:
         kfile.write("{},{}".format(datetime.now().strftime("%y-%m-%d-%H-%M"),pid))
+    kfile.close()
+    
+def stateFileWrite(filename,state):
+    kfile = open(filename,'w+')
+    kfile.write("{}".format(state.trim_whitespace()))
     kfile.close()
     
 def parseKeepAlive(filename):

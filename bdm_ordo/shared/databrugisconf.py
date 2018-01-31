@@ -11,6 +11,7 @@ _mailDir                     = os.path.join(_dbexportpath, "mail/brugis/")
 
 _diff_torestore_schemas      = ["xxx", "xxx", "xxx", "xxx"]
 _staging_torestore_schemas   = ["xxx", "xxx", "xxx", "xxx", "xxx"]
+_prod_torestore_schemas      = ["xxx","xxx", "xxx"]
 
 _diff_toharvest_schemas      = ["xxx","xxx", "xxx","xxx"]
 _prod_toharvest_schemas      = ["xxx", "xxx", "xxx", "xxx"]
@@ -55,5 +56,10 @@ _sftpLOGIN = 'xxx'
 _sftpPASWD = 'xxx'
 
 _sftpROOT = 'xxx/xxx'
+
+_mailSender = 'XXX@XXX.brussels'
+_mailReceivers = ['XXX@XXX.brussels']
+_smtpServer = 'relay.XXX' 
+
 
 _sendMail = False
