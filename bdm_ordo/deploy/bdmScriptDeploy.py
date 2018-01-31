@@ -1,5 +1,5 @@
 # -*- coding: latin_1 -*-
-# Python script for Urbanalysis transfer of DB and templates to staging
+# Deployement of bdm scripts (to be launched from developper WS), overiding of dummy config parameters is included
 
 import ftplib
 import os
@@ -142,7 +142,7 @@ if __name__ == "__main__":
 					
 					
 					f.cwd(ROOT)
-			
+					doLog('Scripts deployed', logFile)
 			except ftplib.error_perm:
 				printAndLog('FTP permission error', logFile)
 				

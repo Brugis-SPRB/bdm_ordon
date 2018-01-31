@@ -1,10 +1,9 @@
 # -*- coding: latin_1 -*-
-# Python script for Urbanalysis transfer of DB and templates to staging
+# installation on remote server based on previously deployed archive and custom config files
 
 import os
 import sys
 import traceback
-import platform
 import shutil
 from crontab import CronTab
 import psutil
@@ -28,7 +27,6 @@ def count_iterable(i):
 if __name__ == "__main__":
 	##running script
 	ordorunning = False
-	nodename =  platform.node()
 	## Copy zip and localConf from ftp directory
 	
 	src_zipfilename = os.path.join(os.path.expanduser("~"),'ftp_root/databrugis_transfer/bdmscripts.zip')
@@ -52,8 +50,7 @@ if __name__ == "__main__":
 				os.stat(src_zipfilename)
 			except:
 				exc_type, exc_value, exc_traceback = sys.exc_info()
-				traceback.print_exception(exc_type, exc_value, exc_traceback,limit=2, file=sys.stdout)
-
+				
 			if os.path.exists(src_rinstall):
 				os.remove(src_rinstall)
 			else:
