@@ -1,13 +1,12 @@
 # -*- coding: latin_1 -*-
+# Restore external DB Schemas in STAGING
 
 import psycopg2
 import os
 import datetime
-import platform
 import  sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
-from shared.sendmail import send_mail
 from shared.printAndLog import printAndLog
 import shared.databrugisconf as DBRUC
 import shared.ordoconf as OCONF
