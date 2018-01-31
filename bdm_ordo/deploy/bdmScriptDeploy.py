@@ -6,7 +6,6 @@ import os
 import socket
 from datetime import datetime
 import  sys
-import platform
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 
@@ -49,7 +48,6 @@ def doLog(myLine, myFile):
 		myFile.write("{} : {}\n".format(datetime.today(),myLine) )
 
 if __name__ == "__main__":
-	nodename =  platform.node()
 	path_to_zip_file = os.pardir
 	
 	
@@ -69,9 +67,9 @@ if __name__ == "__main__":
 		try:
 			f = ftplib.FTP(DBRUC._ftpHOST, DBRUC._ftpLOGIN, DBRUC._ftpPASWD)
 		except (socket.error, socket.gaierror), e:
-			printAndLog('ERROR: cannot reach "%s"' % DBRUC._ftpHOST, logFile)
+			printAndLog('ERROR: cannot reach {}'.format(DBRUC._ftpHOST), logFile)
 		else:
-			printAndLog('*** Connected to host "%s"' % DBRUC._ftpHOST, logFile)
+			printAndLog('*** Connected to host {}'.format(DBRUC._ftpHOST), logFile)
 
 			ROOT = f.pwd()
 			###############################
@@ -94,25 +92,25 @@ if __name__ == "__main__":
 				
 				if os.path.exists(localFile):
 					f.cwd(DBRUC._dirDiff)
-					f.storbinary('STOR %s' % filename, open(localFile, 'rb'))
+					f.storbinary('STOR {}'.format(filename), open(localFile, 'rb'))
 					srcConf = os.path.join(ordodir,'localConf_diff.py')
-					f.storbinary('STOR %s' % 'localConf.py', open(srcConf, 'rb'))
-					f.storbinary('STOR %s' % 'bdmScriptInstall.py', open(srcInstallScript, 'rb'))						
-					f.storbinary('STOR %s' % 'databrugisconf.py', open(srcdataconfig, 'rb'))
-					f.storbinary('STOR %s' % 'ordoconf.py', open(srcordoconfig, 'rb'))
-					f.storbinary('STOR %s' % 'rinstall', open(srcrinstall, 'rb'))
+					f.storbinary('STOR {}'.format('localConf.py'), open(srcConf, 'rb'))
+					f.storbinary('STOR {}'.format('bdmScriptInstall.py'), open(srcInstallScript, 'rb'))						
+					f.storbinary('STOR {}'.format('databrugisconf.py'), open(srcdataconfig, 'rb'))
+					f.storbinary('STOR {}'.format('ordoconf.py'), open(srcordoconfig, 'rb'))
+					f.storbinary('STOR {}'.format('rinstall'), open(srcrinstall, 'rb'))
 					
 					
 		
 					
 					f.cwd(DBRUC._dirStaging)
-					f.storbinary('STOR %s' % filename, open(localFile, 'rb'))
+					f.storbinary('STOR {}'.format(filename), open(localFile, 'rb'))
 					srcConf = os.path.join(ordodir,'localConf_staging.py')						
-					f.storbinary('STOR %s' % 'localConf.py', open(srcConf, 'rb'))						
-					f.storbinary('STOR %s' % 'bdmScriptInstall.py', open(srcInstallScript, 'rb'))	
-					f.storbinary('STOR %s' % 'databrugisconf.py', open(srcdataconfig, 'rb'))
-					f.storbinary('STOR %s' % 'ordoconf.py', open(srcordoconfig, 'rb'))
-					f.storbinary('STOR %s' % 'rinstall', open(srcrinstall, 'rb'))
+					f.storbinary('STOR {}'.format('localConf.py'), open(srcConf, 'rb'))						
+					f.storbinary('STOR {}'.format('bdmScriptInstall.py'), open(srcInstallScript, 'rb'))	
+					f.storbinary('STOR {}'.format('databrugisconf.py'), open(srcdataconfig, 'rb'))
+					f.storbinary('STOR {}'.format('ordoconf.py'), open(srcordoconfig, 'rb'))
+					f.storbinary('STOR {}'.format('rinstall'), open(srcrinstall, 'rb'))
 					
 					
 					
