@@ -1,5 +1,5 @@
 # -*- coding: latin_1 -*-
-
+# State machine entry point
 import os
 import sys
 import datetime

@@ -1,4 +1,5 @@
 # -*- coding: latin_1 -*-
+# PostMaster perform state machine exchange between servers : state change notification, token exchange, failure message dispatching,
 
 import datetime
 import os
@@ -33,9 +34,9 @@ def send_mail(subject, body):
         server = smtplib.SMTP(DBRUC._smtpServer)
         server.ehlo()
         server.sendmail(sender, receivers, msg)
-        print "Successfully sent mail"
+        print ("Successfully sent mail")
     except Exception:
-        print "Error : Unable to send email", sys.exc_info[0]
+        print ("Error : Unable to send email {}".format(sys.exc_info[0]))
 
 ################################################################################
 
@@ -139,7 +140,7 @@ if __name__ == "__main__":
             f.quit()
         except Exception:
             f.close()
-            print ("Exception {}")
+            print ("Exception {}".format(sys.exc_info[0]))
         
         ########################################
         # copy prod to local replica        
@@ -157,7 +158,7 @@ if __name__ == "__main__":
         try:
             copyfile(prodtokenfile, localFile)
         except Exception:
-            print ("Exception")
+            print ("Exception {}".format(sys.exc_info[0]))
         
         if os.path.exists(localmsg):
             os.remove(localmsg)
@@ -165,7 +166,7 @@ if __name__ == "__main__":
             copyfile(prodmsgfile, localmsg)
             os.remove(prodmsgfile)
         except Exception:
-            print ("Exception")
+            print ("Exception {}".format(sys.exc_info[0]))
         
         
         if os.path.exists(localstate):
@@ -174,7 +175,7 @@ if __name__ == "__main__":
             copyfile(prodstatefile, localstate)
             os.remove(prodstatefile)
         except Exception:
-            print ("Exception")
+            print ("Exception {}".format(sys.exc_info[0]))
             
         ######################################
         # Parse TOKENS content
@@ -201,15 +202,15 @@ if __name__ == "__main__":
         if diffmsg != None:
             if len(diffmsg) > 0:
                 printAndLog("Diff message [{}]".format(diffmsg), logFile)
-                send_mail("Bdm ,Anomalie,diffusion", diffmsg)
+                #send_mail("Bdm ,Anomalie,diffusion", diffmsg)
         if stagingmsg != None:
             if len(stagingmsg) > 0:
                 printAndLog("Staging message [{}]".format(stagingmsg), logFile)
-                send_mail("Bdm ,Anomalie,staging", stagingmsg)
+                #send_mail("Bdm ,Anomalie,staging", stagingmsg)
         if prodmsg != None:
             if len(prodmsg) > 0:
                 printAndLog("Prod message [{}]".format(prodmsg), logFile)
-                send_mail("Bdm ,Anomalie,production", prodmsg)
+                #send_mail("Bdm ,Anomalie,production", prodmsg)
         
         
         ######################################
@@ -310,7 +311,7 @@ if __name__ == "__main__":
                 f.close()
             except:
                 pass
-            printAndLog("Exception")
+            printAndLog("Exception {}".format(sys.exc_info[0]))
                 
         
 

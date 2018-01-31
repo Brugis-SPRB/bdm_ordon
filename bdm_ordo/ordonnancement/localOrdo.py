@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# local management of state machine : determine the step to execute, launch step related script, when required ask broadcast to Postmaster
+
 import os
 import sys
 import datetime
