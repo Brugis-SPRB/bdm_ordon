@@ -1,4 +1,5 @@
 # -*- coding: latin_1 -*-
+# restore external DB Schemas on diff
 
 import datetime
 import os
@@ -10,7 +11,6 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 
 
-from shared.sendmail import send_mail
 import shared.databrugisconf as DBRUC
 import shared.ordoconf as OCONF
 from shared.printAndLog import printAndLog

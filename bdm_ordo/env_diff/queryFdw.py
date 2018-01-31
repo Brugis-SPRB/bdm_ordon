@@ -1,14 +1,13 @@
 # -*- coding: latin_1 -*-
+# Synchronize diffs tables with external content via fdw
 
 import psycopg2
 import os
 import datetime
-import platform
 import  sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 
-from shared.sendmail import send_mail
 from shared.printAndLog import printAndLog
 
 import shared.databrugisconf as DBRUC

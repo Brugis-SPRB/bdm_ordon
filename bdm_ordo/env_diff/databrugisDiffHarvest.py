@@ -1,5 +1,5 @@
 # -*- coding: latin_1 -*-
-# Python script for BruGIS Harvesting
+# Bdm diff Harvesting
 
 import datetime
 import os
@@ -12,7 +12,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 import shared.databrugisconf as DBRUC
 import shared.ordoconf as OCONF
 from shared.printAndLog import printAndLog
-from shared.sendmail import send_mail
 
 
 ################################################################################

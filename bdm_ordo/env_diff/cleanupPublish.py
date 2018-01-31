@@ -1,5 +1,5 @@
 # -*- coding: latin_1 -*-
-
+# Drop brugis_publish schema
 import datetime
 import os
 import sys
@@ -9,7 +9,6 @@ import platform
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 import shared.databrugisconf as DBRUC
 import shared.ordoconf as OCONF
-from shared.sendmail import send_mail
 from shared.printAndLog import printAndLog
 from shared.rollingFile import rollingFile
 
@@ -44,8 +43,7 @@ if __name__ == "__main__":
                     printAndLog("Before dump {}".format(cmd1), logFile)
                 os.system(cmd1)
                 
-                ##########################
-                # Update sequence number of old copy ( max 8 days )
+                
                 rf = rollingFile()
                 rf.doRoll(DBRUC._dbexportpath, 'databrugisbrugis_publish', 'tdatabrugisbrugis_publish', 'backup', 8)
                 
