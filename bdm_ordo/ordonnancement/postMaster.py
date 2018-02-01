@@ -36,7 +36,7 @@ def send_mail(subject, body):
         server.sendmail(sender, receivers, msg)
         print ("Successfully sent mail")
     except Exception:
-        print ("Error : Unable to send email {}".format(sys.exc_info[0]))
+        print ("Error : Unable to send email {}".format(sys.exc_info()[0]))
 
 ################################################################################
 
@@ -116,7 +116,19 @@ if __name__ == "__main__":
             f = ftplib.FTP(DBRUC._ftpHOST, DBRUC._ftpLOGIN, DBRUC._ftpPASWD)
         
             ROOT = f.pwd()
-
+            
+            ########################################
+            #
+            # Cleanup msgs replica
+            oldprodmsg = os.path.join(localDirn, "prod_ordo.msg")
+            olddiffmsg = os.path.join(localDirn, "diff_ordo.msg")
+            oldstagingmsg = os.path.join(localDirn, "staging_ordo.msg")
+            if os.path.exists(oldprodmsg):
+                os.remove(oldprodmsg)
+            if os.path.exists(olddiffmsg):
+                os.remove(olddiffmsg)
+            if os.path.exists(oldstagingmsg):
+                os.remove(oldstagingmsg)        
             ########################################
             # copy diff and staging to local replica
             printAndLog("download diff ", logFile)
@@ -139,8 +151,11 @@ if __name__ == "__main__":
             f.cwd(ROOT)
             f.quit()
         except Exception:
-            f.close()
-            print ("Exception {}".format(sys.exc_info[0]))
+            try:
+                f.close()
+            except Exception:
+                pass
+            print ("Exception {}".format(sys.exc_info()[0]))
         
         ########################################
         # copy prod to local replica        
@@ -158,7 +173,7 @@ if __name__ == "__main__":
         try:
             copyfile(prodtokenfile, localFile)
         except Exception:
-            print ("Exception {}".format(sys.exc_info[0]))
+            print ("Exception {}".format(sys.exc_info()[0]))
         
         if os.path.exists(localmsg):
             os.remove(localmsg)
@@ -166,7 +181,7 @@ if __name__ == "__main__":
             copyfile(prodmsgfile, localmsg)
             os.remove(prodmsgfile)
         except Exception:
-            print ("Exception {}".format(sys.exc_info[0]))
+            print ("Exception {}".format(sys.exc_info()[0]))
         
         
         if os.path.exists(localstate):
@@ -175,7 +190,7 @@ if __name__ == "__main__":
             copyfile(prodstatefile, localstate)
             os.remove(prodstatefile)
         except Exception:
-            print ("Exception {}".format(sys.exc_info[0]))
+            print ("Exception {}".format(sys.exc_info()[0]))
             
         ######################################
         # Parse TOKENS content
@@ -311,7 +326,7 @@ if __name__ == "__main__":
                 f.close()
             except:
                 pass
-            printAndLog("Exception {}".format(sys.exc_info[0]))
+            printAndLog("Exception {}".format(sys.exc_info()[0]))
                 
         
 

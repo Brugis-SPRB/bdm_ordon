@@ -153,11 +153,8 @@ if __name__ == "__main__":
                 #Run the script
                 
                 try:
-                    printAndLog("Script path {}".format(scriptpath), logFile)
-                    printAndLog("Step {}".format(newstep), logFile)
-                    printAndLog("Env {}".format(LCONF._envName), logFile)
+                    printAndLog("Step {} Env {}".format(newstep, LCONF._envName), logFile)
                     
-                
                     cmd = "{} {} -wf={} -ctx={} -mode={} -d={}".format(pythonexec, os.path.join(scriptpath,script),newstep,LCONF._envName,GCONF._executionMode,GCONF._debugLevel)
                 
                     printAndLog("Script is {}".format(cmd), logFile)
@@ -168,8 +165,7 @@ if __name__ == "__main__":
                     #subprocess.call(cmd)
                     #os.system(cmd)
                 except Exception:
-                    printAndLog("launch script L4 ", logFile)                
-                    printAndLog("Exception", logFile)
+                    printAndLog("Exception {}".format(sys.exc_info()[0]), logFile)
         
                 printAndLog("Script started", logFile)
                 
