@@ -154,10 +154,12 @@ if __name__ == "__main__":
 				
 				cron.write_to_user()	
 				doLog('CronTab write done', logFile)
+				doLog('Install done', logFile)
 			else:
 				doLog('{} not found'.format(src_zipfilename), logFile)
-		except:
+		except:			
 			exc_type, exc_value, exc_traceback = sys.exc_info()
+			doLog("Installation exception {}".format(sys.exc_info()[0]), logFile)
 			traceback.print_exception(exc_type, exc_value, exc_traceback,limit=2, file=sys.stdout)
 
 
