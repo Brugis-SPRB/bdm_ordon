@@ -50,7 +50,12 @@ if __name__ == "__main__":
                     printAndLog("After connect", logFile)
                       
                 cur = conn.cursor()
+                cur2 = conn.cursor()
+                
+                printAndLog("before wf_intextintra_1synchro()", logFile)
+                
                 cur.execute("SELECT commonbrugis.wf_intextintra_1synchro()")
+                
                 
                 rows = cur.fetchall()
                 for row in rows:
@@ -59,8 +64,10 @@ if __name__ == "__main__":
                     if len(msg) > 10:
                         prepareMessage("DB Error {}".format(msg))
                 
-                conn.commit()
-    
+                printAndLog("before util_refreshbrugismaterializedviews()", logFile)
+                
+                cur2.execute("SELECT commonbrugis.util_refreshbrugismaterializedviews()")
+                
                 printAndLog( "{} done".format(wfstepId),logFile)
             OCONF.tokenFileWriteDone(wfstepId)    
         except:

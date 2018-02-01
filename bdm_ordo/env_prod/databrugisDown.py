@@ -31,35 +31,40 @@ if __name__ == "__main__":
 				try:
 					f = ftplib.FTP(DBRUC._ftpHOST, DBRUC._ftpLOGIN, DBRUC._ftpPASWD)
 				except (socket.error, socket.gaierror), e:
-					printAndLog('ERROR: cannot reach "%s"' % DBRUC._ftpHOST, logFile)
+					printAndLog('ERROR: cannot reach {} '.format(DBRUC._ftpHOST), logFile)
 				else:
-					printAndLog('*** Connected to host "%s"' % DBRUC._ftpHOST, logFile)
+					printAndLog('*** Connected to host {} '.format(DBRUC._ftpHOST), logFile)
 					ROOT = f.pwd()
 		
 					#########################################
 					# Copy to prod
 					dirn = DBRUC._dirDiff
-					localDirn = DBRUC._dirProd 
+					localDirn = DBRUC._backuppath 
+					#localDirn = DBRUC._dirProd 
 					schemas = DBRUC._prod_todownload_schemas
 					try:
 						f.cwd(dirn)
 					except ftplib.error_perm:
-						printAndLog('ERROR: cannot CD to "%s"' % dirn, logFile)
+						printAndLog('ERROR: cannot CD to  {} '.format(dirn), logFile)
 						f.quit()
 					else:
-						printAndLog('*** Changed to "%s" folder' % dirn, logFile)
+						printAndLog('*** Changed to {} folder'.format(dirn), logFile)
 						for schem in schemas:
 							filename = "{}{}.backup".format(DBRUC._db_dbname, schem)
 							
-							printAndLog('Download file "%s"' % filename, logFile)
+							printAndLog('Download file {} '.format(filename) , logFile)
 							localFile = os.path.join(localDirn, filename)
-							printAndLog('Local file "%s"' % localFile, logFile)
+							printAndLog('Local file {}'.format(localFile), logFile)
 							if os.path.exists(localFile):
+								print ("remove local file")
 								os.remove(localFile)
 							try:
+								print ("before open {}".format(localFile))
 								with open(localFile, "wb") as gFile:
-									f.retrbinary('RETR %s' % filename , gFile.write)
+									print ("retrieve {}".format(filename))
+									f.retrbinary('RETR {}'.format(filename) , gFile.write)
 							except Exception:
+								print ("Exception")
 								printAndLog ("Exception {}".format(sys.exc_info()[0]))
 						f.cwd(ROOT)
 					f.quit()

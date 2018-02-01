@@ -27,16 +27,18 @@ if __name__ == "__main__":
         with open(os.path.join(DBRUC._mailDir, logFileName), 'a') as logFile:
             printAndLog( "{} running".format(wfstepId),logFile)
             dbName = DBRUC._db_dbname
-            printAndLog("Startup restore diffusion schemas", logFile)
+            printAndLog("Startup restore prod schemas", logFile)
             
             conn_s = "dbname='{}' user='{}' host='{}' password='{}'".format(dbName,
                                                                              DBRUC._db_user,
                                                                              DBRUC._prod_db_host,
                                                                              DBRUC._db_password)
             
+            
             if mode == "EMUL":
                 printAndLog("EMULATION MODE", logFile)
             else:
+                printAndLog("Try connect", logFile)
                 conn = psycopg2.connect(conn_s)
                 cur = conn.cursor()
                 
@@ -44,11 +46,12 @@ if __name__ == "__main__":
                 for schem in DBRUC._prod_torestore_schemas:            
                     filename = '{}{}.backup'.format(DBRUC._db_dbname, schem)
                     fullpath = os.path.join(DBRUC._backuppath, filename)
+                    printAndLog("check dump exit {}".format(fullpath), logFile)
                     if not os.path.exists(fullpath):
                         printAndLog("Missing backup file {}".format(filename), logFile)
                         raise Exception('Missing file')   
                 
-                
+                printAndLog("Drop schemas".format(fullpath), logFile)
                 for schem in DBRUC._prod_torestore_schemas:            
                     cur.execute("DROP SCHEMA if exists {} CASCADE".format(schem))
                     conn.commit()
@@ -58,6 +61,7 @@ if __name__ == "__main__":
                     filename = '{}{}.backup'.format(dbName, schem)
                     logfilename = '{}{}.log'.format(dbName, schem)
                     fullpath = os.path.join(DBRUC._backuppath, filename)
+                    printAndLog("restore dump {}".format(fullpath), logFile)
                     cmd = "pg_restore --host {} --port 5432 --username {} --no-password  -d databrugis --verbose  {}  > {}".format(
                         DBRUC._prod_db_host,
                         DBRUC._db_userdump,
@@ -66,15 +70,16 @@ if __name__ == "__main__":
                     if dlevel == 'V':
                         printAndLog(cmd, logFile)
                     os.system(cmd)    
+                printAndLog("Before data integration".format(fullpath), logFile)
                 conn2 = psycopg2.connect(conn_s)
                 cur2 = conn2.cursor()
-                if dlevel == 'V':
-                    printAndLog("Before wf_intextinter_2integration", logFile)
+                #if dlevel == 'V':
+                printAndLog("Before wf_intextinter_2integration", logFile)
                 cur2.execute("SELECT commonbrugis.wf_intextinter_2integration()")
-                if dlevel == 'V':
-                    printAndLog("Before synchro_publish_tables", logFile)
+                #if dlevel == 'V':
+                printAndLog("Before synchro_publish_tables", logFile)
                 cur2.execute("select commonbrugis.synchro_publish_tables()")
-                conn2.commit()
+                #conn2.commit()
     
                 printAndLog( "{} done".format(wfstepId),logFile)
             OCONF.tokenFileWriteDone(wfstepId)    

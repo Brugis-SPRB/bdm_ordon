@@ -36,12 +36,12 @@ if __name__ == "__main__":
                 printAndLog("EMULATION MODE", logFile)
             else:
                 for sch in schemas:
-                    filename= "{}{}".format(dbname, sch)
-                    printAndLog("Export schema %s." % sch, logFile)
+                    filename= "{}{}.backup".format(dbname, sch)
+                    printAndLog("Export schema {}.".format(sch), logFile)
                     
                     fullpath = os.path.join(DBRUC._dbexportpath, filename)
                     if os.path.exists(fullpath):
-                        printAndLog("Cleaning %s of %s" % (DBRUC._dbexportpath, filename), logFile)
+                        printAndLog("Cleaning {} of {}".format(DBRUC._dbexportpath, filename), logFile)
                         os.remove(fullpath)
                     
                     cmd = "pg_dump --host {} --port 5432 --username {} --no-password  --format custom --blobs --encoding UTF8 --schema {} --file {}".format( 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
                         sch,
                         fullpath)
                     if dlevel == 'V':
-                        printAndLog("Execute command %s" % cmd, logFile)                                                                                                                                          
+                        printAndLog("Execute command {}".format(cmd), logFile)                                                                                                                                          
                     os.system(cmd)
                 printAndLog( "{} done".format(wfstepId),logFile)            
         OCONF.tokenFileWriteDone(wfstepId)        
