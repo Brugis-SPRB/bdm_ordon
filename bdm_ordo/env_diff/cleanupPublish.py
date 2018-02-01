@@ -4,7 +4,6 @@ import datetime
 import os
 import sys
 import psycopg2
-import platform
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
 import shared.databrugisconf as DBRUC
@@ -39,20 +38,27 @@ if __name__ == "__main__":
                     DBRUC._db_userdump,
                     'brugis_publish',
                     fullpath)
-                if dlevel == 'V':
-                    printAndLog("Before dump {}".format(cmd1), logFile)
+                printAndLog("Dump {}".format(fullpath), logFile)
+            
+                
                 os.system(cmd1)
                 
+                printAndLog("before rolling file", logFile)
+            
                 
-                rf = rollingFile()
-                rf.doRoll(DBRUC._dbexportpath, 'databrugisbrugis_publish', 'tdatabrugisbrugis_publish', 'backup', 8)
+                #rf = rollingFile()
+                #rf.doRoll(DBRUC._dbexportpath, 'databrugisbrugis_publish', 'tdatabrugisbrugis_publish', 'backup', 8)
                 
+                printAndLog("after rolling file", logFile)
+            
                 
                 conn_s = "dbname='{}' user='{}' host='{}' password='{}'".format(DBRUC._db_dbname,
                                                                                  DBRUC._db_user,
                                                                                  DBRUC._diff_db_host,
                                                                                  DBRUC._db_password)
                 
+                printAndLog("drop schema", logFile)
+            
                 ##########################
                 # Recreate an empy schema
                 conn = psycopg2.connect(conn_s)

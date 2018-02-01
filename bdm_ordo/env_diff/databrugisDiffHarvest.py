@@ -41,13 +41,13 @@ if __name__ == "__main__":
                 printAndLog("EMULATION MODE", logFile)
             else:
                 for sch in schemas:
-                    filename = "{}{}".format(dbname, sch)            
-                    printAndLog("Export schema %s." % sch, logFile)
+                    filename = "{}{}.backup".format(dbname, sch)            
+                    printAndLog("Export schema {}".format(sch), logFile)
                     
                     fullpath = os.path.join(DBRUC._dbexportpath, filename)
                     if os.path.exists(fullpath):
                         if dlevel == 'V':
-                            printAndLog("Cleaning %s of %s" % (DBRUC._dbexportpath, filename), logFile)
+                            printAndLog("Cleaning {} of {}".format(DBRUC._dbexportpath, filename), logFile)
                         os.remove(fullpath)
                     
                     
@@ -56,7 +56,7 @@ if __name__ == "__main__":
                         DBRUC._db_userdump,
                         sch,
                         fullpath)
-                    printAndLog("Execute command %s" % cmd1, logFile)
+                    printAndLog("Execute command {}".format(cmd1), logFile)
                     os.system(cmd1)
                 printAndLog( "{} done".format(wfstepId),logFile)            
             OCONF.tokenFileWriteDone(wfstepId)    

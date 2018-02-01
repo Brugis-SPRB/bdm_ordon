@@ -5,7 +5,6 @@ import datetime
 import os
 
 import psycopg2
-import platform
 import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -61,17 +60,16 @@ if __name__ == "__main__":
                     logfilename = '{}{}.log'.format(DBRUC._db_dbname, schem)
                     
                     fullpath = os.path.join(DBRUC._backuppath, filename)
-                    cmd1 = "pg_restore --host {} --port 5432 --username {} --no-password  -d databrugis --verbose  {}  > {}".format(
-                        DBRUC._prod_db_host,
-                        DBRUC._db_userdump,
-                        fullpath,
-                        logfilename)
-                    if dlevel == 'V':
-                        printAndLog("Restore {}".format(cmd1), logFile)
-                        
-                    os.system(cmd1)	
-                    printAndLog(cmd1, logFile)
-                
+                    try:
+                        cmd1 = "pg_restore --host {} --port 5432 --username {} --no-password  -d databrugis --verbose  {}  > {}".format(
+                            DBRUC._diff_db_host,
+                            DBRUC._db_userdump,
+                            fullpath,
+                            logfilename)    
+                        os.system(cmd1)	
+                        printAndLog(cmd1, logFile)
+                    except:
+                        printAndLog("failure restoring {}".format(fullpath), logFile)
     
     
                 printAndLog( "{} done".format(wfstepId),logFile)
