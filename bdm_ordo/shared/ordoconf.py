@@ -6,8 +6,6 @@ from os.path import expanduser
 from datetime import datetime
 from datetime import timedelta
 
-#_dbexportpath                = "c:\\test"
-
 
 def parseTokenFile(filename):
     try:
@@ -104,15 +102,6 @@ _keepAliveFileName           = os.path.join(_ordopath,'keepalive.txt')
 _processMaxDuration          = timedelta(minutes=40)
 
 
-_diff_torestore_schemas      = ["XXX", "XXX", "XXX", "XXX"]
-_staging_torestore_schemas   = ["XXX", "XXX", "XXX", "XXX", "XXX"]
-
-_diff_toharvest_schemas      = ["XXX","XXX", "XXX","XXX"]
-_prod_toharvest_schemas      = ["XXX", "XXX", "XXX", "XXX"]
-
-_prod_todownload_schemas     = ["XXX","XXX", "XXX","XXX"]
-_staging_todownload_schemas  = ["XXX"]
-
 
 
 
@@ -121,29 +110,6 @@ _dirStaging                   = '/XXX/XXX/'
 _dirProd                      = '/XXX/XXX/'
 
 
-_allschemasdown               = ["XXX","XXX"]
-_alldumpsdown                 = ["XXX.backup","XXX.backup"]
-
-
-_fileinter                    = 'XXX'
-_fileexterninter              = 'XXX'
-
-
- 
-_stagingserver               = "XXX"
-_prodserver                  = "XXX"
-                                  
-                                
-_prod_db_host                  = 'XXX'
-_diff_db_host                  = 'XXX'
-_staging_db_host              = 'XXX'
-
-
-
-_db_user                     = 'XXX'
-_db_userdump                   = 'XXX'
-_db_password                 = 'XXX'
-_db_dbname                     = 'XXX'
 
 _ftpHOST = 'XXX'
 _ftpLOGIN = 'XXX'
