@@ -33,6 +33,14 @@ def prepareMessage(myLine):
         else:
             notifyFile.write("{} : {}\n".format(datetime.datetime.now(),myLine) )
 
+def prepareStageChange(myLine):
+    with open(os.path.join(OCONF._ordopath, "ordo.state"), 'w+') as stateFile:
+        print (myLine)
+        if myLine is None:
+            stateFile.write("{}\n".format(datetime.datetime.now()) )
+        else:
+            stateFile.write("{} : {}\n".format(datetime.datetime.now(),myLine) )
+
 
 if __name__ == "__main__":
     logFileName = "{}-{}.log".format(os.path.basename(__file__).replace('.py', ''),datetime.date.today().strftime('%d_%m_%Y'))
@@ -41,10 +49,8 @@ if __name__ == "__main__":
     print (parentDir)
     
     with open(os.path.join(OCONF._ordopath, logFileName), 'a') as logFile:
-        printAndLog("Start Local Ordo", logFile)
-        printAndLog("Running on {}".format(LCONF._envName), logFile)
+        printAndLog("Start Local Ordo on {}".format(LCONF._envName), logFile)
         
-       
         csvpath = os.path.join(os.path.dirname(__file__),'globalordo.csv')        
         csvfile = open(csvpath)            
         tokencontent = OCONF.parseTokenFile(OCONF._tokenFileName)
@@ -103,12 +109,15 @@ if __name__ == "__main__":
                     OCONF.keepAliveFileWrite(OCONF._keepAliveFileName,-1,True)
                     printAndLog("SRVOUT == {}".format(row['SRVOUT']), logFile)
                     if row['SRVOUT'] != LCONF._envName:
-                        printAndLog("State is done transit asked", logFile)
+                        printAndLog("State is done transit required", logFile)
                         newstate = 'transit'
                     else:
-                        printAndLog("State is done set pending", logFile)
+                        printAndLog("State is done force pending", logFile)
                         newstate = 'pending'
                     newstep = row['STOUTOK']
+                    printAndLog("new step  == {}".format(newstep), logFile)
+                    if newstep == "END":
+                        prepareStageChange("step is [END] no more script to process".format(newstep))
                     break
                 elif tokencontent['state'] == 'fail':
                     msg = "Failure at step {}".format(tokencontent['step'])
@@ -119,6 +128,7 @@ if __name__ == "__main__":
                     else:
                         newstate = 'pending'
                     newstep = row['STOUTNOK']
+                    printAndLog("new step  == {}".format(newstep), logFile)
                     break            
             else:
                 continue
@@ -135,40 +145,42 @@ if __name__ == "__main__":
             ###########################
             ## Le script doit s'exécuter en local
             if row['SRVIN'] == LCONF._envName: 
-                script = row['SCRIPT']
-                printAndLog("launch script {}".format(script), logFile)
-                
-                printAndLog("launch script L1 ", logFile)
-                
-                OCONF.tokenFileWrite(OCONF._tokenFileName, newstate, newstep)
-                
-                printAndLog("launch script L2 ", logFile)
-                
-                parentScriptDir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))                
-                scriptpath = os.path.join(parentScriptDir, LCONF._envScript)
-                
-                pythonexec = sys.executable
-                
-                printAndLog("launch script L3 ", logFile)
-                #Run the script
-                
-                try:
-                    printAndLog("Step {} Env {}".format(newstep, LCONF._envName), logFile)
+                if newstep == "END":
+                    prepareStageChange("step is [END] no more script to process".format(newstep))
+                else:    
+                    script = row['SCRIPT']
+                    printAndLog("launch script {}".format(script), logFile)
                     
-                    cmd = "{} {} -wf={} -ctx={} -mode={} -d={}".format(pythonexec, os.path.join(scriptpath,script),newstep,LCONF._envName,GCONF._executionMode,GCONF._debugLevel)
-                
-                    printAndLog("Script is {}".format(cmd), logFile)
-                    args = cmd.split()
-                    p = subprocess.Popen(args)
                     
-                    OCONF.keepAliveFileWrite(OCONF._keepAliveFileName,p.pid,False)
-                    #subprocess.call(cmd)
-                    #os.system(cmd)
-                except Exception:
-                    printAndLog("Exception {}".format(sys.exc_info()[0]), logFile)
-        
-                printAndLog("Script started", logFile)
-                
+                    OCONF.tokenFileWrite(OCONF._tokenFileName, newstate, newstep)
+                    
+                    
+                    parentScriptDir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))                
+                    scriptpath = os.path.join(parentScriptDir, LCONF._envScript)
+                    
+                    pythonexec = sys.executable
+                    
+                    printAndLog("python runtime found", logFile)
+                    #Run the script
+                    
+                    try:
+                        printAndLog("Step {} Env {}".format(newstep, LCONF._envName), logFile)
+                        
+                        cmd = "{} {} -wf={} -ctx={} -mode={} -d={}".format(pythonexec, os.path.join(scriptpath,script),newstep,LCONF._envName,GCONF._executionMode,GCONF._debugLevel)
+                    
+                        printAndLog("Script is {}".format(cmd), logFile)
+                        args = cmd.split()
+                        p = subprocess.Popen(args)
+                        
+                        OCONF.keepAliveFileWrite(OCONF._keepAliveFileName,p.pid,False)
+                        prepareStageChange("Script [{}] launched".format(newstep))
+                        #subprocess.call(cmd)
+                        #os.system(cmd)
+                    except Exception:
+                        printAndLog("Exception {}".format(sys.exc_info()[0]), logFile)
+            
+                    printAndLog("Script started", logFile)
+                    
                 break
             ###########################
             ## Le script doit s'exécuter sur un autre serveur

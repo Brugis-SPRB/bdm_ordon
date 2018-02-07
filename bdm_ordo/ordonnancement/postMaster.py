@@ -285,7 +285,6 @@ if __name__ == "__main__":
         #####################################
         # Broadcast new TOKEN
         
-        printAndLog("Broadcast new TOKEN", logFile)
         
         
         newtokenfileName = os.path.join(localDirn,'token.txt')
@@ -313,12 +312,11 @@ if __name__ == "__main__":
             f.storbinary('STOR token.txt', open(newtokenfileName, 'rb'))
             
             f.close()
-            printAndLog("Remove prod", logFile)
             
             prodtokenfileName = os.path.join(OCONF._ordopath,'token.txt')
             if os.path.exists(prodtokenfileName):
                 os.remove(prodtokenfileName)
-            printAndLog("Copy prod {} {} ".format(newtokenfileName, prodtokenfileName), logFile)
+            printAndLog("Push prod {} {} ".format(newtokenfileName, prodtokenfileName), logFile)
             copyfile(newtokenfileName, prodtokenfileName)
             printAndLog("Broadcast is done", logFile)            
         except Exception:
